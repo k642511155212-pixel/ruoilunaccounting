@@ -1,0 +1,12 @@
+ACCOUNTING MASTERY — QUICK GITHUB PAGES DEPLOY
+
+1) Unzip this package.
+2) Open your GitHub repository.
+3) Upload every file from the unzipped folder to the repository root.
+4) Commit changes.
+5) GitHub: Settings > Pages.
+6) Source: Deploy from a branch.
+7) Branch: main. Folder: /(root).
+8) Save and wait for the Pages URL.
+
+The website is static and needs no build command.

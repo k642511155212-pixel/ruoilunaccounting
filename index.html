@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#F2B400" />
+  <meta name="description" content="Accounting Mastery — source-grounded Principles of Accounting study system with English-first lessons, Vietnamese key terms, practice explanations, and exam review." />
+  <title>Accounting Mastery</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="appShell">
+    <header class="topbar">
+      <button class="icon-btn menu-btn" id="menuBtn" aria-label="Toggle navigation">☰</button>
+      <a class="brand" href="#dashboard" aria-label="Accounting Mastery dashboard">
+        <span class="brand-mark">AM</span>
+        <span><strong>Accounting Mastery</strong><small>PRINCIPLES OF ACCOUNTING · IFRS TRACK</small></span>
+      </a>
+      <div class="top-progress">
+        <div class="top-progress-label"><span>Overall progress</span><strong id="topProgressText">0%</strong></div>
+        <div class="progress-track"><div class="progress-fill" id="topProgressBar"></div></div>
+      </div>
+    </header>
+
+    <aside class="sidebar" id="sidebar">
+      <nav class="main-nav">
+        <a href="#dashboard" data-route="dashboard"><span class="nav-icon">⌂</span>Dashboard</a>
+        <a href="#practice" data-route="practice"><span class="nav-icon">✓</span>Practice</a>
+        <a href="#mistakes" data-route="mistakes"><span class="nav-icon">↺</span>Mistake Notebook</a>
+        <a href="#flashcards" data-route="flashcards"><span class="nav-icon">▱</span>Flashcards</a>
+        <a href="#formula" data-route="formula"><span class="nav-icon">ƒ</span>Formula Sheet</a>
+        <a href="#exam" data-route="exam"><span class="nav-icon">◷</span>Exam Mode</a>
+        <a href="#glossary" data-route="glossary"><span class="nav-icon">A</span>Glossary</a>
+        <a href="#sources" data-route="sources"><span class="nav-icon">☷</span>Sources</a>
+        <a href="#search" data-route="search"><span class="nav-icon">⌕</span>Search</a>
+      </nav>
+
+      <div class="side-section-title">LEARN</div>
+      <div id="chapterNav" class="chapter-nav"></div>
+      <div class="sidebar-footer">
+        <span class="source-dot"></span>
+        <span>Source-grounded build<br><small>Progress saved on this device</small></span>
+      </div>
+    </aside>
+
+    <main id="main" tabindex="-1"></main>
+  </div>
+  <div class="toast" id="toast"></div>
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
