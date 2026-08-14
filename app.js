@@ -19,7 +19,7 @@
   function saveState(){ localStorage.setItem('accountingMasteryState', JSON.stringify(state)); updateProgressUI(); }
   function esc(s=''){ return String(s).replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m])); }
   function toast(msg){ toastEl.textContent=msg; toastEl.classList.add('show'); setTimeout(()=>toastEl.classList.remove('show'),1800); }
-  function route(){ return (location.hash||'#dashboard').slice(1).split('/'); }
+  function route(){ const clean=(location.hash||'#dashboard').slice(1).split('?')[0]; return clean.split('/'); }
   function chapterById(id){ return D.chapters.find(c=>c.id===id)||D.chapters[0]; }
   function questionById(id){ return D.questions.find(q=>q.id===id); }
   function progress(){
@@ -55,7 +55,7 @@
     const mistakes=Object.values(state.mistakes).filter(x=>!x.mastered).length;
     const chDone=Object.values(state.completedChapters).filter(Boolean).length;
     main.innerHTML=`<div class="page">
-      <div class="hero-strip"><div><h1>Study Pack Ready</h1><p>Expanded theory, verified FTU-style practice, Vietnamese key terms, worked midterm cases, and source checking — now in the yellow Accounting Mastery theme.</p></div><div class="hero-actions"><a class="btn primary" href="#practice">Start Practice</a><a class="btn" href="#learn/ch1">Open Course Map</a></div></div>
+      <div class="hero-strip dashboard-hero"><div class="hero-copy"><span class="hero-kicker">UPDATED CLASS WORKBOOK · YELLOW / BLACK EDITION</span><h1>Study. Work it out. Check the structure.</h1><p>Expanded theory, 72 explained questions, Vietnamese key terms, source-based practice packs, and a new Accounting Lab with reusable worksheets for teacher and textbook exercises.</p><div class="hero-actions"><a class="btn primary" href="#lab">Open Accounting Lab</a><a class="btn hero-light" href="#practice">Start Practice</a><a class="btn hero-ghost" href="#learn/ch1">Course Map</a></div></div><img src="assets/hero-ledger.svg" alt="Yellow and black accounting ledger illustration" class="dashboard-hero-art"></div>
       <div class="section-title"><div><h2>Your Study System</h2><p>Progress is saved locally in your browser.</p></div></div>
       <div class="grid four">
         <div class="card metric"><div class="kicker">Overall</div><strong>${progress()}%</strong><small>${chDone}/${D.chapters.length} chapters marked complete</small></div>
@@ -64,11 +64,12 @@
         <div class="card metric"><div class="kicker">To review</div><strong>${mistakes}</strong><small>active mistake-notebook items</small></div>
       </div>
       <div class="section-title"><div><h2>Quick Actions</h2><p>Keep the loop short: learn → practice → explain → review.</p></div></div>
-      <div class="grid four">
-        <a class="card quick-card" href="#practice"><span class="q-icon">✓</span><div><h3>Practice questions</h3><p>Immediate answer + explanation + source tag.</p></div></a>
+      <div class="quick-grid">
+        <a class="card quick-card featured" href="#lab"><img class="quick-art" src="assets/equation.svg" alt=""><div><h3>Accounting Lab</h3><p>A = L + E, journals, ledger, trial balance, adjustments, worksheet, FIFO and cash flows.</p></div></a>
+        <a class="card quick-card" href="#practice"><span class="q-icon">✓</span><div><h3>Practice questions</h3><p>72 questions with immediate explanation and source tags.</p></div></a>
         <a class="card quick-card" href="#exam"><span class="q-icon">◷</span><div><h3>Exam mode</h3><p>30 randomized questions, timed, no instant feedback.</p></div></a>
         <a class="card quick-card" href="#mistakes"><span class="q-icon">↺</span><div><h3>Review mistakes</h3><p>Turn weak concepts into a targeted revision queue.</p></div></a>
-        <a class="card quick-card" href="#glossary"><span class="q-icon">A</span><div><h3>Key terms</h3><p>English-first definitions with Vietnamese support.</p></div></a>
+        <a class="card quick-card" href="#glossary"><span class="q-icon">A</span><div><h3>55 key terms</h3><p>English-first definitions with Vietnamese support.</p></div></a>
       </div>
       <div class="section-title"><div><h2>Course Map</h2><p>Source-grounded theory for the supplied chapter set.</p></div></div>
       <div class="grid four">${D.chapters.map(c=>{
@@ -146,7 +147,7 @@
 
   function renderSources(){
     const links={ifrs:'https://www.ifrs.org/issued-standards/list-of-standards/conceptual-framework/',openstax:'https://openstax.org/details/books/principles-financial-accounting'};
-    main.innerHTML=`<div class="page">${pageHead('Traceability','Sources & Verification','Academic content is organized from your uploaded materials. Authoritative/open sources are used only as cross-checks where appropriate.')}<div class="case-warning"><strong>Source fidelity rule.</strong> The site does not blindly copy a supplied solution when it conflicts with the accounting logic. Example: the K61 note says accrued revenue can decrease assets; the verified treatment increases Accounts Receivable. The Sky Castle mock also contains a trial-balance inconsistency and is flagged rather than “solved” with invented numbers.</div><div class="grid two">${D.sources.map(s=>`<div class="card"><span class="badge yellow">${esc(s.type)}</span><h3 style="margin-top:8px">${esc(s.title)}</h3><p><strong>${esc(s.author)}</strong></p><p style="margin-top:7px">${esc(s.note)}</p>${links[s.id]?`<p style="margin-top:10px"><a class="btn small" href="${links[s.id]}" target="_blank" rel="noopener">Open reference</a></p>`:''}</div>`).join('')}</div></div>`;
+    main.innerHTML=`<div class="page">${pageHead('Traceability','Sources & Verification','Academic content and templates are organized from your uploaded textbook, lecture material, FTU practice papers, and the updated class workbooks. Cross-check sources remain clearly labeled.')}<div class="case-warning"><strong>Source fidelity rule.</strong> The site does not blindly copy a supplied solution when it conflicts with the accounting logic. Example: the K61 note says accrued revenue can decrease assets; the verified treatment increases Accounts Receivable. The Sky Castle mock also contains a trial-balance inconsistency and is flagged rather than “solved” with invented numbers.</div><div class="grid two">${D.sources.map(s=>`<div class="card"><span class="badge yellow">${esc(s.type)}</span><h3 style="margin-top:8px">${esc(s.title)}</h3><p><strong>${esc(s.author)}</strong></p><p style="margin-top:7px">${esc(s.note)}</p>${links[s.id]?`<p style="margin-top:10px"><a class="btn small" href="${links[s.id]}" target="_blank" rel="noopener">Open reference</a></p>`:''}</div>`).join('')}</div></div>`;
   }
 
   function renderSearch(){
@@ -179,7 +180,7 @@
 
   function render(){
     closeMenu(); setActive(); updateProgressUI(); const [r,a]=route();
-    if(r==='dashboard')renderDashboard(); else if(r==='learn')renderLearn(a); else if(r==='practice')initPractice(); else if(r==='mistakes')renderMistakes(); else if(r==='flashcards')renderFlashcards(); else if(r==='formula')renderFormula(); else if(r==='exam')renderExam(); else if(r==='glossary')renderGlossary(); else if(r==='sources')renderSources(); else if(r==='search')renderSearch(); else if(r==='cases')renderCase(a); else renderDashboard();
+    if(r==='dashboard')renderDashboard(); else if(r==='learn')renderLearn(a); else if(r==='practice')initPractice(); else if(r==='lab')window.AccountingLab.render(); else if(r==='mistakes')renderMistakes(); else if(r==='flashcards')renderFlashcards(); else if(r==='formula')renderFormula(); else if(r==='exam')renderExam(); else if(r==='glossary')renderGlossary(); else if(r==='sources')renderSources(); else if(r==='search')renderSearch(); else if(r==='cases')renderCase(a); else renderDashboard();
     setActive(); main.focus({preventScroll:true}); window.scrollTo(0,0);
   }
   window.addEventListener('hashchange',render);

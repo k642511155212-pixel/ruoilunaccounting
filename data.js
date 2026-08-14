@@ -71,6 +71,27 @@ window.ACCOUNTING_DATA = {
       "note": "Used selectively for cash-flow classification and indirect-method questions."
     },
     {
+      "id": "midtermhighlight",
+      "title": "MIDTERM-MCQs-Nguyên-lý-kế-toán-CLC.pdf",
+      "author": "FTU practice material",
+      "type": "Answer-marked midterm practice",
+      "note": "Highlighted answer version used as an additional cross-check for Chapters 1–3 practice patterns. Explanations on the site are rewritten in source-grounded language."
+    },
+    {
+      "id": "ml249illustration",
+      "title": "3. ML249 Illustration.xlsx",
+      "author": "Course illustration workbook",
+      "type": "Classroom illustration",
+      "note": "Used for the Intro Practice templates that connect cash movements, operating results, and financial position, plus prepaid-expense timing examples."
+    },
+    {
+      "id": "classworkbook",
+      "title": "giaphuc practice.xlsx",
+      "author": "Course / class practice workbook",
+      "type": "Updated practice workbook",
+      "note": "New source for reusable exercise templates: tabular accounting-equation analysis, journalizing, ledger/T-accounts, trial balance, adjustments, accounting cycle, merchandising, FIFO inventory, and statement of cash flows."
+    },
+    {
       "id": "ifrs",
       "title": "IFRS Foundation — Conceptual Framework / IAS 7",
       "author": "IFRS Foundation",
@@ -1059,6 +1080,54 @@ window.ACCOUNTING_DATA = {
       "vi": "Tương đương tiền",
       "definition": "Short-term, highly liquid investment readily convertible to known cash with insignificant value-change risk.",
       "chapter": "Ch14"
+    },
+    {
+      "term": "Accounting equation analysis",
+      "vi": "Phân tích phương trình kế toán",
+      "definition": "A tabular way to show how each transaction changes assets, liabilities, and equity while keeping the accounting equation balanced.",
+      "chapter": "Ch. 1"
+    },
+    {
+      "term": "Correcting entry",
+      "vi": "Bút toán sửa sai",
+      "definition": "An entry made to correct an accounting error. A useful workflow is: identify the incorrect entry, reverse its effect when needed, then record the correct entry.",
+      "chapter": "Ch. 4"
+    },
+    {
+      "term": "Accounting worksheet",
+      "vi": "Bảng tính kế toán",
+      "definition": "A working paper used to organize an unadjusted trial balance, adjustments, adjusted balances, and amounts that flow into financial statements.",
+      "chapter": "Ch. 4"
+    },
+    {
+      "term": "Freight-in",
+      "vi": "Chi phí vận chuyển mua hàng",
+      "definition": "Transportation cost paid by the buyer to bring inventory to its required location; under the perpetual system it is included in inventory cost when the buyer bears the freight.",
+      "chapter": "Ch. 5"
+    },
+    {
+      "term": "Freight-out",
+      "vi": "Chi phí giao hàng",
+      "definition": "Delivery cost borne by the seller; it is treated as a selling/delivery expense rather than as inventory cost.",
+      "chapter": "Ch. 5"
+    },
+    {
+      "term": "Sales returns and allowances",
+      "vi": "Hàng bán bị trả lại và giảm giá hàng bán",
+      "definition": "A contra-revenue account used when customers return goods or receive allowances on sales.",
+      "chapter": "Ch. 5"
+    },
+    {
+      "term": "Sales discount",
+      "vi": "Chiết khấu bán hàng",
+      "definition": "A reduction in the amount collected from a customer for early payment under stated credit terms.",
+      "chapter": "Ch. 5"
+    },
+    {
+      "term": "Tabular analysis",
+      "vi": "Phân tích dạng bảng",
+      "definition": "A structured table that tracks transaction-by-transaction changes in specific accounts and checks that the accounting equation remains in balance.",
+      "chapter": "Ch. 1"
     }
   ],
   "questions": [
@@ -2053,6 +2122,166 @@ window.ACCOUNTING_DATA = {
       "answer": 0,
       "explanation": "Reconcile: 76,000 + 12,700 − 13,000 − 23,000 + 7,000 − 9,500 + 4,000 = 54,200.",
       "source": "Cash-flow test bank — adapted"
+    },
+    {
+      "id": "U01",
+      "chapter": "ch1",
+      "topic": "Accounting equation — owner investment",
+      "difficulty": "easy",
+      "question": "A shareholder invests $500 cash in a new business in exchange for share capital. What is the immediate effect on the accounting equation?",
+      "options": [
+        "Assets +500; Liabilities +500",
+        "Assets +500; Equity +500",
+        "Assets −500; Equity +500",
+        "No effect until the business earns revenue"
+      ],
+      "answer": 1,
+      "explanation": "Cash is an asset, so assets increase by $500. The investment is contributed capital, so equity increases by the same amount. The equation remains balanced.",
+      "source": "ML249 Illustration workbook — Intro Practice"
+    },
+    {
+      "id": "U02",
+      "chapter": "ch1",
+      "topic": "Accounting equation — purchase on account",
+      "difficulty": "easy",
+      "question": "A business purchases supplies for $500 on account. Which tabular-analysis effect is correct?",
+      "options": [
+        "Supplies +500; Accounts Payable +500",
+        "Cash −500; Supplies +500",
+        "Supplies +500; Revenue +500",
+        "Expense +500; Accounts Payable +500"
+      ],
+      "answer": 0,
+      "explanation": "The supplies are acquired now, so the asset Supplies increases. Because payment will occur later, Accounts Payable, a liability, increases by the same amount.",
+      "source": "giaphuc practice.xlsx — Transaction analysis"
+    },
+    {
+      "id": "U03",
+      "chapter": "ch1",
+      "topic": "Accounting equation — mixed cash and credit purchase",
+      "difficulty": "medium",
+      "question": "Equipment costing $4,500 is purchased by paying $1,000 cash and promising to pay the rest next month. Which set of effects is correct?",
+      "options": [
+        "Cash −1,000; Equipment +4,500; Accounts Payable +3,500",
+        "Cash −4,500; Equipment +4,500 only",
+        "Equipment +4,500; Revenue +4,500",
+        "Cash −1,000; Equipment +3,500; Accounts Payable +4,500"
+      ],
+      "answer": 0,
+      "explanation": "Equipment increases by the full $4,500 cost. Cash decreases by the $1,000 paid immediately, and Accounts Payable increases by the remaining $3,500 obligation. Net assets rise by $3,500, matched by the liability increase.",
+      "source": "giaphuc practice.xlsx — Transaction analysis"
+    },
+    {
+      "id": "U04",
+      "chapter": "ch3",
+      "topic": "Prepaid expense — mobile credit analogy",
+      "difficulty": "medium",
+      "question": "A $100 prepaid phone balance is purchased and $25 is used immediately. Ignoring tax, what is the best accounting analogy after the call?",
+      "options": [
+        "Prepaid asset 100; expense 0",
+        "Prepaid asset 75; expense 25",
+        "Cash 75; revenue 25",
+        "Liability 75; expense 25"
+      ],
+      "answer": 1,
+      "explanation": "The unused service potential behaves like a prepaid asset. As $25 of the benefit is consumed, $25 becomes expense and $75 remains as the prepaid asset.",
+      "source": "ML249 Illustration workbook + Chapter 3 textbook logic"
+    },
+    {
+      "id": "U05",
+      "chapter": "ch3",
+      "topic": "Prepaid expense — future airline ticket",
+      "difficulty": "medium",
+      "question": "A non-refundable airline ticket is purchased on October 1 for a flight on December 30. Under the class illustration, when is the cost normally recognized as expense?",
+      "options": [
+        "Entirely on October 1 because cash was paid",
+        "When the flight/service is consumed on December 30",
+        "Only when the airline issues an invoice",
+        "Never, because the ticket is non-refundable"
+      ],
+      "answer": 1,
+      "explanation": "Payment date and expense-recognition date can differ. The purchase creates a prepaid asset until the transportation service is consumed; the cost is then recognized as expense.",
+      "source": "ML249 Illustration workbook + Chapter 3 textbook logic"
+    },
+    {
+      "id": "U06",
+      "chapter": "ch4",
+      "topic": "Correcting entries",
+      "difficulty": "medium",
+      "question": "A company incorrectly debits Supplies for $310 when the purchase should have been Equipment, with the credit to Accounts Payable already correct. What correcting entry is needed?",
+      "options": [
+        "Dr Equipment 310; Cr Supplies 310",
+        "Dr Accounts Payable 310; Cr Equipment 310",
+        "Dr Supplies 310; Cr Equipment 310",
+        "Dr Equipment 620; Cr Supplies 620"
+      ],
+      "answer": 0,
+      "explanation": "The credit to Accounts Payable is already correct. Only the asset classification must be corrected: increase Equipment and remove the amount incorrectly placed in Supplies.",
+      "source": "giaphuc practice.xlsx — P4.6 correcting-entry structure"
+    },
+    {
+      "id": "U07",
+      "chapter": "ch5",
+      "topic": "Freight-in vs freight-out",
+      "difficulty": "medium",
+      "question": "Under a perpetual inventory system, when the buyer bears a $100 shipping fee on inventory purchased, which treatment matches the class illustration?",
+      "options": [
+        "Dr Freight-out 100; Cr Cash 100",
+        "Dr Inventory 100; Cr Cash 100",
+        "Dr Sales Discount 100; Cr Cash 100",
+        "No entry because freight is never part of inventory"
+      ],
+      "answer": 1,
+      "explanation": "When the buyer bears the freight necessary to bring inventory to its location, the class workbook treats the shipping cost as part of Inventory under the perpetual system.",
+      "source": "giaphuc practice.xlsx — Chap 5 Illustration"
+    },
+    {
+      "id": "U08",
+      "chapter": "ch6",
+      "topic": "Perpetual FIFO setup",
+      "difficulty": "medium",
+      "question": "A source exercise asks students to journalize inventory transactions under a perpetual FIFO system. Which information must be tracked continuously to determine cost of goods sold?",
+      "options": [
+        "Only the latest selling price",
+        "Inventory cost layers: quantities and unit costs",
+        "Only total sales revenue",
+        "Only beginning cash and ending cash"
+      ],
+      "answer": 1,
+      "explanation": "FIFO under a perpetual system requires current cost layers so each sale can be matched to the oldest available units and their costs.",
+      "source": "giaphuc practice.xlsx — P6.8 + Chapter 6 textbook logic"
+    },
+    {
+      "id": "U09",
+      "chapter": "ch14",
+      "topic": "Indirect method — accounts receivable",
+      "difficulty": "medium",
+      "question": "In the indirect operating section, Accounts Receivable increases by 59,800 during the year. How is this change treated?",
+      "options": [
+        "Add 59,800 to net income",
+        "Subtract 59,800 from net income",
+        "Classify as investing inflow",
+        "Ignore it because it is non-cash"
+      ],
+      "answer": 1,
+      "explanation": "An increase in Accounts Receivable means recognized revenue exceeded cash collected from customers. The increase is therefore subtracted from net income to move toward operating cash flow.",
+      "source": "giaphuc practice.xlsx — P14.9 + Chapter 14 cash-flow logic"
+    },
+    {
+      "id": "U10",
+      "chapter": "ch14",
+      "topic": "Cash-flow reconciliation",
+      "difficulty": "easy",
+      "question": "A cash-flow worksheet reports opening cash of 43,000, net increase in cash of 58,000, and closing cash of 101,000. Which statement is correct?",
+      "options": [
+        "The statement does not reconcile",
+        "43,000 + 58,000 = 101,000, so the cash reconciliation works",
+        "Closing cash should be 15,000",
+        "Net change in cash must always equal net income"
+      ],
+      "answer": 1,
+      "explanation": "A completed statement of cash flows should reconcile beginning cash plus the net change in cash to ending cash. Here 43,000 + 58,000 = 101,000.",
+      "source": "giaphuc practice.xlsx — Practice cash-flow worksheet"
     }
   ],
   "cases": [
@@ -2306,6 +2535,146 @@ window.ACCOUNTING_DATA = {
       "name": "Indirect method — operating liabilities",
       "formula": "Increase in operating current liability → add; decrease → subtract",
       "vi": "Nợ NH hoạt động tăng → cộng; giảm → trừ"
+    }
+  ],
+  "labTemplates": [
+    {
+      "id": "equation",
+      "title": "Accounting Equation Analyzer",
+      "vi": "Phân tích phương trình kế toán",
+      "source": "giaphuc practice.xlsx · 2. Transaction analysis",
+      "art": "assets/equation.svg",
+      "desc": "Enter transaction effects across Assets = Liabilities + Equity. Row checks and cumulative totals update automatically."
+    },
+    {
+      "id": "journal",
+      "title": "General Journal",
+      "vi": "Nhật ký chung",
+      "source": "giaphuc practice.xlsx · P2.2 / P2.3",
+      "art": "assets/journal.svg",
+      "desc": "Date, account titles, debit, and credit columns with an automatic debit-credit balance check."
+    },
+    {
+      "id": "ledger",
+      "title": "T-Account / Ledger",
+      "vi": "Tài khoản chữ T / Sổ cái",
+      "source": "giaphuc practice.xlsx · P2.3 / P2.4",
+      "art": "assets/journal.svg",
+      "desc": "Post debits and credits to an account and calculate the ending balance before preparing a trial balance."
+    },
+    {
+      "id": "trial",
+      "title": "Trial Balance",
+      "vi": "Bảng cân đối thử",
+      "source": "giaphuc practice.xlsx · P2.4 / P2.5",
+      "art": "assets/journal.svg",
+      "desc": "List account balances in debit or credit columns and verify that the two totals agree."
+    },
+    {
+      "id": "adjusting",
+      "title": "Adjusting Entries Workspace",
+      "vi": "Bảng bút toán điều chỉnh",
+      "source": "giaphuc practice.xlsx · P3.1 / P3.4",
+      "art": "assets/journal.svg",
+      "desc": "Structured workspace for prepaid expenses, unearned revenue, accruals, depreciation, and other period-end adjustments."
+    },
+    {
+      "id": "cycle",
+      "title": "Accounting Cycle Worksheet",
+      "vi": "Bảng tính chu trình kế toán",
+      "source": "giaphuc practice.xlsx · P4.5",
+      "art": "assets/equation.svg",
+      "desc": "Move from unadjusted trial balance to adjustments, adjusted trial balance, income statement, and statement of financial position columns."
+    },
+    {
+      "id": "correcting",
+      "title": "Correcting Entries",
+      "vi": "Bút toán sửa sai",
+      "source": "giaphuc practice.xlsx · P4.6",
+      "art": "assets/journal.svg",
+      "desc": "Use the Incorrect → Reverse → Correct → Correcting workflow shown in the updated practice workbook."
+    },
+    {
+      "id": "merch",
+      "title": "Merchandising Journal",
+      "vi": "Nhật ký doanh nghiệp thương mại",
+      "source": "giaphuc practice.xlsx · Chap 5 Illustration / P5.1",
+      "art": "assets/inventory.svg",
+      "desc": "Buyer/seller workspace for purchases, sales, freight, returns, allowances, and discounts under a perpetual system."
+    },
+    {
+      "id": "fifo",
+      "title": "Perpetual FIFO Table",
+      "vi": "Bảng FIFO kê khai thường xuyên",
+      "source": "giaphuc practice.xlsx · P6.8",
+      "art": "assets/inventory.svg",
+      "desc": "Track transaction dates, units, unit costs, sales, and FIFO cost layers for inventory exercises."
+    },
+    {
+      "id": "cashflow",
+      "title": "Indirect Cash Flow Builder",
+      "vi": "Lập BCLCTT phương pháp gián tiếp",
+      "source": "giaphuc practice.xlsx · P14.3 / P14.9 / Practice",
+      "art": "assets/cashflow.svg",
+      "desc": "Start from net income, adjust non-cash items and working capital, then add investing and financing sections and reconcile cash."
+    }
+  ],
+  "sourcePracticePacks": [
+    {
+      "title": "Intro Practice Illustrations",
+      "source": "3. ML249 Illustration.xlsx · Intro Practice",
+      "chapter": "Ch. 1 / Ch. 3",
+      "template": "equation",
+      "note": "Cash movements → operating result → financial position, plus prepaid-service timing analogies."
+    },
+    {
+      "title": "Teacher Transaction Analysis",
+      "source": "giaphuc practice.xlsx · 2. Transaction analysis",
+      "chapter": "Ch. 1–2",
+      "template": "equation",
+      "note": "Investment, asset purchases, revenue, unearned revenue, borrowing, expenses, settlement, and dividends."
+    },
+    {
+      "title": "Recording Process Pack",
+      "source": "giaphuc practice.xlsx · P2.2 / P2.3 / P2.4 / P2.5",
+      "chapter": "Ch. 2",
+      "template": "journal",
+      "note": "Journalize → post → ledger → trial balance practice."
+    },
+    {
+      "title": "Adjusting Accounts Pack",
+      "source": "giaphuc practice.xlsx · P3.1 / P3.4",
+      "chapter": "Ch. 3",
+      "template": "adjusting",
+      "note": "Prepayments, accruals, insurance, unearned revenue, and period-end adjustment work."
+    },
+    {
+      "title": "Completing the Cycle Pack",
+      "source": "giaphuc practice.xlsx · P4.5 / P4.6",
+      "chapter": "Ch. 4",
+      "template": "cycle",
+      "note": "Adjusted trial balance, statements, closing/post-closing work, and correction of errors."
+    },
+    {
+      "title": "Merchandising Pack",
+      "source": "giaphuc practice.xlsx · Chap 5 Illustration / P5.1",
+      "chapter": "Ch. 5",
+      "template": "merch",
+      "note": "Buyer vs seller entries, freight, returns/allowances, early-payment discounts, and COGS."
+    },
+    {
+      "title": "Inventory Pack",
+      "source": "giaphuc practice.xlsx · P6.8",
+      "chapter": "Ch. 6",
+      "template": "fifo",
+      "note": "Perpetual FIFO transaction table with quantities and unit costs."
+    },
+    {
+      "title": "Cash Flow Pack",
+      "source": "giaphuc practice.xlsx · P14.3 / P14.9 / P14.7 / Practice",
+      "chapter": "Ch. 14",
+      "template": "cashflow",
+      "note": "Indirect operating section, investing/financing workpapers, disposal gains/losses, and cash reconciliation."
     }
   ]
 };

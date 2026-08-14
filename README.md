@@ -1,58 +1,61 @@
-# Accounting Mastery — GitHub Pages Edition
+# Accounting Mastery v0.3 — GitHub Pages Edition
 
-Static, build-free study website for Principles of Accounting.
+Static, build-free Principles of Accounting study website with a yellow / black visual system.
 
-## What is included
+## v0.3 update
 
-- Yellow / gold UI theme matching the requested direction.
-- 7 source-grounded theory modules: Chapters 1, 2, 3, 4, 5, 6, and 14.
+- Added **Accounting Lab** with 10 reusable working templates based on the updated class workbooks:
+  1. Accounting Equation Analyzer — Assets = Liabilities + Equity
+  2. General Journal
+  3. T-Account / Ledger
+  4. Trial Balance
+  5. Adjusting Entries Workspace
+  6. Accounting Cycle Worksheet
+  7. Correcting Entries
+  8. Merchandising Journal
+  9. Perpetual FIFO Table
+  10. Indirect Cash Flow Builder
+- Templates autosave in the browser, include mechanical balance/reconciliation checks, can be reset for a new exercise, and can export the active table to CSV.
+- Added a **source-practice map** for the updated workbook sheets: Intro Practice, Transaction Analysis, P2.x, P3.x, P4.x, Chapter 5, P6.8, and P14.x/Practice.
+- Added original yellow/black SVG illustrations for the dashboard and lab templates.
+- Expanded practice bank to **72 explained questions**.
+- Expanded glossary to **55 English ↔ Vietnamese accounting terms**.
+- Added updated source entries for `giaphuc practice.xlsx`, `3. ML249 Illustration.xlsx`, and the answer-marked FTU midterm PDF.
+- Fixed hash routing so filtered practice/glossary links and `#lab?template=...` routes work correctly.
+
+## Existing study system
+
+- Source-grounded theory modules for Chapters 1, 2, 3, 4, 5, 6, and 14.
 - English-first lessons with Vietnamese key-term support.
-- 62 explained practice questions, including verified/adapted FTU midterm-style questions.
-- Immediate answer feedback and detailed reasoning.
+- Immediate answer feedback with explanations.
 - Mistake Notebook stored in `localStorage`.
-- Flashcards, glossary, formula sheet, global search, and 30-question timed Exam Mode.
-- Two long-form midterm cases:
-  - Schilling Equipment: fully worked accounting cycle.
-  - Sky Castle: source inconsistency is detected and flagged instead of forcing a fake balance.
-- Source page showing how textbook, slides, practice papers, IFRS Foundation, and OpenStax were used.
+- Flashcards, glossary, formula sheet, global search, progress tracking, and 30-question timed Exam Mode.
+- Worked Schilling Equipment case and a source-quality warning for the internally inconsistent Sky Castle mock.
 
 ## Files
 
 - `index.html` — app shell
-- `styles.css` — responsive yellow theme
-- `data.js` — lessons, glossary, formulas, practice questions, cases, and source manifest
-- `app.js` — routing, practice engine, progress, mistake notebook, flashcards, search, and exam mode
+- `styles.css` — responsive yellow / black theme
+- `data.js` — lessons, glossary, formulas, questions, cases, sources, and Accounting Lab catalog
+- `app.js` — routing, learning/practice/exam system
+- `lab.js` — interactive exercise-template engine
+- `assets/*.svg` — original visual illustrations
 - `404.html` — GitHub Pages fallback
 - `.nojekyll` — disables Jekyll processing
 
 ## Publish on GitHub Pages
 
-### Option A — simplest
+1. Upload **all files and the `assets` folder** to the repository root.
+2. Commit the changes.
+3. Open **Settings → Pages**.
+4. Under **Build and deployment**, choose **Deploy from a branch**.
+5. Choose branch **main** and folder **/(root)**.
+6. Save.
 
-1. Create or open your GitHub repository.
-2. Upload **all files in this folder to the repository root**.
-3. Commit the files.
-4. Open **Settings → Pages**.
-5. Under **Build and deployment**, choose **Deploy from a branch**.
-6. Choose branch **main** and folder **/(root)**.
-7. Save.
-8. GitHub will generate a public URL such as `https://YOUR-USERNAME.github.io/YOUR-REPOSITORY/`.
+No Node.js, npm, React, Vite, or server build is required.
 
-No Node.js, npm, Vite, React build, or server configuration is required.
+## Updating later
 
-## Updating content later
+Academic content lives mainly in `data.js`. Interactive worksheets live in `lab.js`. Visual design lives in `styles.css` and `assets/`.
 
-Most academic content is in `data.js`:
-
-- `chapters` → theory modules
-- `glossary` → English/Vietnamese terms
-- `questions` → practice bank
-- `cases` → worked long-form cases
-- `formulae` → formula sheet
-- `sources` → source manifest
-
-After editing, commit and push to GitHub. GitHub Pages will redeploy automatically.
-
-## Important source-quality note
-
-The site uses supplied practice material as a source of question patterns, but explanations are independently checked against the core textbook logic. It does not reproduce a questionable answer simply because it appears in a study note.
+The templates intentionally check structure rather than auto-solving accounting judgment. For example, the Accounting Equation template checks whether transaction effects balance, and the journal/trial-balance templates verify debit-credit equality.

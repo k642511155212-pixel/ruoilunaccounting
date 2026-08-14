@@ -1,12 +1,11 @@
-ACCOUNTING MASTERY — QUICK GITHUB PAGES DEPLOY
+ACCOUNTING MASTERY v0.3 — GITHUB PAGES
 
-1) Unzip this package.
-2) Open your GitHub repository.
-3) Upload every file from the unzipped folder to the repository root.
-4) Commit changes.
-5) GitHub: Settings > Pages.
-6) Source: Deploy from a branch.
-7) Branch: main. Folder: /(root).
-8) Save and wait for the Pages URL.
+1. Upload EVERY file in this folder to the repository root, including:
+   index.html, 404.html, data.js, app.js, lab.js, styles.css, .nojekyll, and the assets/ folder.
+2. Commit / push to main.
+3. GitHub repository → Settings → Pages.
+4. Source: Deploy from a branch.
+5. Branch: main. Folder: /(root).
+6. Save and wait for the Pages deployment to finish.
 
-The website is static and needs no build command.
+No build command is required.
