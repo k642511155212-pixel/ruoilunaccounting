@@ -1,0 +1,10 @@
+Accounting Mastery v0.6 — Deep Theory Edition
+
+Upgrade focus:
+- Every Learn section now expands each core theory point into a full explanatory paragraph.
+- Every section includes a concrete worked example plus a step-by-step reasoning flow.
+- Teacher mind-map flow remains the primary learning route for mapped chapters.
+- Textbook cross-check and exact "Read again here" locations remain visible.
+- Active-recall prompts are added to every theory section.
+- Vietnamese key terms remain linked inline to the bilingual glossary.
+- Existing v0.5 practice bank, full exercise library, Accounting Lab, mind map, and image fixes are preserved.

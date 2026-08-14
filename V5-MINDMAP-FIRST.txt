@@ -1,0 +1,9 @@
+ACCOUNTING MASTERY v0.5 — MINDMAP-FIRST
+
+Primary Learn architecture:
+Teacher Mind Map → expanded by textbook/slides → example → practice → explanation → review location → Accounting Lab.
+
+Interactive bank: 802 questions total.
+Generated course-original variants: 730.
+Glossary: dynamically displayed from data.
+Full source exercise library retained.
