@@ -1,0 +1,15 @@
+ACCOUNTING MASTERY v3.1 — IMAGE FIX
+
+Issue fixed:
+- v3 referenced SVG artwork through assets/*.svg.
+- If the assets folder was not uploaded/preserved exactly on GitHub Pages, every illustration showed as a broken image.
+
+Fix in this build:
+- All SVG artwork is embedded directly inside index.html as data URLs.
+- No assets/ folder is required.
+- Accounting Lab is explicitly included in the sidebar.
+- lab.js is loaded before app.js.
+- 404.html mirrors index.html so the same dependencies are available there.
+
+Deployment:
+Upload ALL root files in this package to the repository root and replace the old v3 files.

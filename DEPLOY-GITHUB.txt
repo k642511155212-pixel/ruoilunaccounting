@@ -1,7 +1,7 @@
 ACCOUNTING MASTERY v0.3 — GITHUB PAGES
 
 1. Upload EVERY file in this folder to the repository root, including:
-   index.html, 404.html, data.js, app.js, lab.js, styles.css, .nojekyll, and the assets/ folder.
+   index.html, 404.html, data.js, app.js, lab.js, styles.css, .nojekyll, (all visual artwork is embedded; no assets folder is required).
 2. Commit / push to main.
 3. GitHub repository → Settings → Pages.
 4. Source: Deploy from a branch.

@@ -39,7 +39,7 @@ Static, build-free Principles of Accounting study website with a yellow / black 
 - `data.js` — lessons, glossary, formulas, questions, cases, sources, and Accounting Lab catalog
 - `app.js` — routing, learning/practice/exam system
 - `lab.js` — interactive exercise-template engine
-- `assets/*.svg` — original visual illustrations
+- Visual illustrations are embedded directly in `index.html` as SVG data URLs, so GitHub Pages does not depend on an `assets/` folder.
 - `404.html` — GitHub Pages fallback
 - `.nojekyll` — disables Jekyll processing
 
@@ -56,6 +56,6 @@ No Node.js, npm, React, Vite, or server build is required.
 
 ## Updating later
 
-Academic content lives mainly in `data.js`. Interactive worksheets live in `lab.js`. Visual design lives in `styles.css` and `assets/`.
+Academic content lives mainly in `data.js`. Interactive worksheets live in `lab.js`. Visual design lives in `styles.css`; SVG artwork is embedded in `index.html` for deployment reliability.
 
 The templates intentionally check structure rather than auto-solving accounting judgment. For example, the Accounting Equation template checks whether transaction effects balance, and the journal/trial-balance templates verify debit-credit equality.

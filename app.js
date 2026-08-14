@@ -55,7 +55,7 @@
     const mistakes=Object.values(state.mistakes).filter(x=>!x.mastered).length;
     const chDone=Object.values(state.completedChapters).filter(Boolean).length;
     main.innerHTML=`<div class="page">
-      <div class="hero-strip dashboard-hero"><div class="hero-copy"><span class="hero-kicker">UPDATED CLASS WORKBOOK · YELLOW / BLACK EDITION</span><h1>Study. Work it out. Check the structure.</h1><p>Expanded theory, 72 explained questions, Vietnamese key terms, source-based practice packs, and a new Accounting Lab with reusable worksheets for teacher and textbook exercises.</p><div class="hero-actions"><a class="btn primary" href="#lab">Open Accounting Lab</a><a class="btn hero-light" href="#practice">Start Practice</a><a class="btn hero-ghost" href="#learn/ch1">Course Map</a></div></div><img src="assets/hero-ledger.svg" alt="Yellow and black accounting ledger illustration" class="dashboard-hero-art"></div>
+      <div class="hero-strip dashboard-hero"><div class="hero-copy"><span class="hero-kicker">UPDATED CLASS WORKBOOK · YELLOW / BLACK EDITION</span><h1>Study. Work it out. Check the structure.</h1><p>Expanded theory, 72 explained questions, Vietnamese key terms, source-based practice packs, and a new Accounting Lab with reusable worksheets for teacher and textbook exercises.</p><div class="hero-actions"><a class="btn primary" href="#lab">Open Accounting Lab</a><a class="btn hero-light" href="#practice">Start Practice</a><a class="btn hero-ghost" href="#learn/ch1">Course Map</a></div></div><img src="${window.AM_VISUALS.hero}" alt="Yellow and black accounting ledger illustration" class="dashboard-hero-art"></div>
       <div class="section-title"><div><h2>Your Study System</h2><p>Progress is saved locally in your browser.</p></div></div>
       <div class="grid four">
         <div class="card metric"><div class="kicker">Overall</div><strong>${progress()}%</strong><small>${chDone}/${D.chapters.length} chapters marked complete</small></div>
@@ -65,7 +65,7 @@
       </div>
       <div class="section-title"><div><h2>Quick Actions</h2><p>Keep the loop short: learn → practice → explain → review.</p></div></div>
       <div class="quick-grid">
-        <a class="card quick-card featured" href="#lab"><img class="quick-art" src="assets/equation.svg" alt=""><div><h3>Accounting Lab</h3><p>A = L + E, journals, ledger, trial balance, adjustments, worksheet, FIFO and cash flows.</p></div></a>
+        <a class="card quick-card featured" href="#lab"><img class="quick-art" src="${window.AM_VISUALS.equation}" alt=""><div><h3>Accounting Lab</h3><p>A = L + E, journals, ledger, trial balance, adjustments, worksheet, FIFO and cash flows.</p></div></a>
         <a class="card quick-card" href="#practice"><span class="q-icon">✓</span><div><h3>Practice questions</h3><p>72 questions with immediate explanation and source tags.</p></div></a>
         <a class="card quick-card" href="#exam"><span class="q-icon">◷</span><div><h3>Exam mode</h3><p>30 randomized questions, timed, no instant feedback.</p></div></a>
         <a class="card quick-card" href="#mistakes"><span class="q-icon">↺</span><div><h3>Review mistakes</h3><p>Turn weak concepts into a targeted revision queue.</p></div></a>

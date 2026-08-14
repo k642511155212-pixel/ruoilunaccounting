@@ -2543,7 +2543,7 @@ window.ACCOUNTING_DATA = {
       "title": "Accounting Equation Analyzer",
       "vi": "Phân tích phương trình kế toán",
       "source": "giaphuc practice.xlsx · 2. Transaction analysis",
-      "art": "assets/equation.svg",
+      "art": window.AM_VISUALS.equation,
       "desc": "Enter transaction effects across Assets = Liabilities + Equity. Row checks and cumulative totals update automatically."
     },
     {
@@ -2551,7 +2551,7 @@ window.ACCOUNTING_DATA = {
       "title": "General Journal",
       "vi": "Nhật ký chung",
       "source": "giaphuc practice.xlsx · P2.2 / P2.3",
-      "art": "assets/journal.svg",
+      "art": window.AM_VISUALS.journal,
       "desc": "Date, account titles, debit, and credit columns with an automatic debit-credit balance check."
     },
     {
@@ -2559,7 +2559,7 @@ window.ACCOUNTING_DATA = {
       "title": "T-Account / Ledger",
       "vi": "Tài khoản chữ T / Sổ cái",
       "source": "giaphuc practice.xlsx · P2.3 / P2.4",
-      "art": "assets/journal.svg",
+      "art": window.AM_VISUALS.journal,
       "desc": "Post debits and credits to an account and calculate the ending balance before preparing a trial balance."
     },
     {
@@ -2567,7 +2567,7 @@ window.ACCOUNTING_DATA = {
       "title": "Trial Balance",
       "vi": "Bảng cân đối thử",
       "source": "giaphuc practice.xlsx · P2.4 / P2.5",
-      "art": "assets/journal.svg",
+      "art": window.AM_VISUALS.journal,
       "desc": "List account balances in debit or credit columns and verify that the two totals agree."
     },
     {
@@ -2575,7 +2575,7 @@ window.ACCOUNTING_DATA = {
       "title": "Adjusting Entries Workspace",
       "vi": "Bảng bút toán điều chỉnh",
       "source": "giaphuc practice.xlsx · P3.1 / P3.4",
-      "art": "assets/journal.svg",
+      "art": window.AM_VISUALS.journal,
       "desc": "Structured workspace for prepaid expenses, unearned revenue, accruals, depreciation, and other period-end adjustments."
     },
     {
@@ -2583,7 +2583,7 @@ window.ACCOUNTING_DATA = {
       "title": "Accounting Cycle Worksheet",
       "vi": "Bảng tính chu trình kế toán",
       "source": "giaphuc practice.xlsx · P4.5",
-      "art": "assets/equation.svg",
+      "art": window.AM_VISUALS.equation,
       "desc": "Move from unadjusted trial balance to adjustments, adjusted trial balance, income statement, and statement of financial position columns."
     },
     {
@@ -2591,7 +2591,7 @@ window.ACCOUNTING_DATA = {
       "title": "Correcting Entries",
       "vi": "Bút toán sửa sai",
       "source": "giaphuc practice.xlsx · P4.6",
-      "art": "assets/journal.svg",
+      "art": window.AM_VISUALS.journal,
       "desc": "Use the Incorrect → Reverse → Correct → Correcting workflow shown in the updated practice workbook."
     },
     {
@@ -2599,7 +2599,7 @@ window.ACCOUNTING_DATA = {
       "title": "Merchandising Journal",
       "vi": "Nhật ký doanh nghiệp thương mại",
       "source": "giaphuc practice.xlsx · Chap 5 Illustration / P5.1",
-      "art": "assets/inventory.svg",
+      "art": window.AM_VISUALS.inventory,
       "desc": "Buyer/seller workspace for purchases, sales, freight, returns, allowances, and discounts under a perpetual system."
     },
     {
@@ -2607,7 +2607,7 @@ window.ACCOUNTING_DATA = {
       "title": "Perpetual FIFO Table",
       "vi": "Bảng FIFO kê khai thường xuyên",
       "source": "giaphuc practice.xlsx · P6.8",
-      "art": "assets/inventory.svg",
+      "art": window.AM_VISUALS.inventory,
       "desc": "Track transaction dates, units, unit costs, sales, and FIFO cost layers for inventory exercises."
     },
     {
@@ -2615,7 +2615,7 @@ window.ACCOUNTING_DATA = {
       "title": "Indirect Cash Flow Builder",
       "vi": "Lập BCLCTT phương pháp gián tiếp",
       "source": "giaphuc practice.xlsx · P14.3 / P14.9 / Practice",
-      "art": "assets/cashflow.svg",
+      "art": window.AM_VISUALS.cashflow,
       "desc": "Start from net income, adjust non-cash items and working capital, then add investing and financing sections and reconcile cash."
     }
   ],
