@@ -1,4 +1,16 @@
-# Accounting Mastery v0.6 — Deep Theory Edition
+# Accounting Mastery v0.6.1 — Deep Theory + Annotation Edition
+
+
+## v0.6.1 — Annotation Mode
+
+- Highlight any word, phrase, or sentence inside **Learn** lessons.
+- Four semantic highlight colors: **Important**, **Exam trap**, **Understood/example**, and **Definition**.
+- Attach comments to highlights and edit them later by clicking the highlighted text.
+- **My Notes** collects annotations from every chapter with search, chapter/type filters, and jump-back-to-source links.
+- Notes persist in `localStorage` on the current browser.
+- **Export backup** / **Import backup** uses a JSON file so annotations can be moved between browsers/devices or preserved before future site updates.
+- Selected theory can be turned into a **personal flashcard**; personal cards appear together with the built-in glossary deck.
+- Annotation anchoring stores the exact selection plus surrounding text instead of only raw HTML offsets, making highlights more resilient when lesson markup changes.
 
 ## v0.6 theory-depth upgrade
 

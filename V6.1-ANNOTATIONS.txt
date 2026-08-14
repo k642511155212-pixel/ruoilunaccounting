@@ -1,0 +1,15 @@
+Accounting Mastery v0.6.1 — Annotation Mode
+
+New personal study layer:
+- Select text in any Learn lesson to open an annotation toolbar.
+- Four highlight types: Important, Exam Trap, Understood/Example, Definition.
+- Add/edit/delete inline comments attached to highlighted passages.
+- Persistent storage in browser localStorage.
+- My Notes page with search, chapter filter, color/type filter, edit, delete, and jump-to-source.
+- Export/import annotation backups as JSON.
+- Create personal flashcards from selected theory or existing annotations.
+- Flashcards page now mixes course glossary cards with personal cards.
+- Chapter Learn sidebar shows saved annotations and lets you jump to them.
+- TextQuote-style anchoring uses selected text + nearby prefix/suffix so annotations are more resilient to future theory updates.
+
+Storage key: accountingMasteryAnnotationsV1

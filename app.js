@@ -88,6 +88,7 @@
     const acc=answered?Math.round(correct/answered*100):0;
     const mistakes=Object.values(state.mistakes).filter(x=>!x.mastered).length;
     const chDone=Object.values(state.completedChapters).filter(Boolean).length;
+    const annotationCount=window.AccountingAnnotations?.allAnnotations?.().length||0;
     main.innerHTML=`<div class="page">
       <div class="hero-strip dashboard-hero"><div class="hero-copy"><span class="hero-kicker">TEACHER MIND MAP · FULL SOURCE PACK · YELLOW / BLACK</span><h1>Follow the flow. Understand the why. Then work it out.</h1><p>Mindmap-first lessons following your teacher’s conceptual flow, 15-chapter coverage, ${D.questions.length} interactive explained questions, Vietnamese key terms, full source exercises, and Accounting Lab workspaces.</p><div class="hero-actions"><a class="btn primary" href="#lab">Open Accounting Lab</a><a class="btn hero-light" href="#practice">Start Practice</a><a class="btn hero-ghost" href="#mindmap">Teacher Mind Map</a></div></div><img src="${window.AM_VISUALS.hero}" alt="Yellow and black accounting ledger illustration" class="dashboard-hero-art"></div>
       <div class="section-title"><div><h2>Your Study System</h2><p>Progress is saved locally in your browser.</p></div></div>
@@ -103,6 +104,7 @@
         <a class="card quick-card" href="#exercises"><span class="q-icon">▤</span><div><h3>All textbook exercises</h3><p>Complete chapter-by-chapter exercise library from the ebook and uploaded sources.</p></div></a><a class="card quick-card" href="#practice"><span class="q-icon">✓</span><div><h3>Interactive practice</h3><p>Curated questions with immediate explanation and source tags.</p></div></a>
         <a class="card quick-card" href="#exam"><span class="q-icon">◷</span><div><h3>Exam mode</h3><p>30 randomized questions, timed, no instant feedback.</p></div></a>
         <a class="card quick-card" href="#mistakes"><span class="q-icon">↺</span><div><h3>Review mistakes</h3><p>Turn weak concepts into a targeted revision queue.</p></div></a>
+        <a class="card quick-card" href="#notes"><span class="q-icon">✎</span><div><h3>My Notes & Highlights</h3><p>${annotationCount} saved annotations · highlight theory, attach comments, and jump back to the exact passage.</p></div></a>
         <a class="card quick-card" href="#glossary"><span class="q-icon">A</span><div><h3>${D.glossary.length} key terms</h3><p>English-first definitions with Vietnamese support.</p></div></a>
       </div>
       <div class="section-title"><div><h2>Chapter Library</h2><p>Core chapters follow the teacher mind map; extension chapters follow the supplied IFRS 5e textbook.</p></div></div>
@@ -122,7 +124,7 @@
       const pointHTML=s.body.map((b,j)=>`<div class="theory-point"><div class="theory-point-no">${j+1}</div><div><h4>${esc(b)}</h4><p>${esc(DT?DT.explainPoint(b,s,c):b)}</p></div></div>`).join('');
       const steps=(DT?DT.workedSteps(s):['Identify the facts.','State the accounting rule.','Apply the rule.','Check the result.']).map((x,j)=>`<li><b>Step ${j+1}</b><span>${esc(x)}</span></li>`).join('');
       const recall=(DT?DT.activeRecall(s):[]).map(x=>`<li>${esc(x)}</li>`).join('');
-      return `<article class="lesson deep-lesson" id="lesson-${i}">
+      return `<article class="lesson deep-lesson" id="lesson-${i}" data-lesson-index="${i}">
         <div class="lesson-head">${s.mapPath?`<div class="map-anchor">MIND MAP ↳ ${esc(s.mapPath)}</div>`:''}<h2>${esc(s.title)}</h2><p>${esc(s.lead)}</p></div>
         <div class="lesson-body">
           <div class="depth-banner"><span>DEEP THEORY</span><div><strong>Understand the rule before memorizing the entry.</strong><small>Each idea below is explained, connected to accounting logic, then applied to a concrete example.</small></div></div>
@@ -146,13 +148,15 @@
     main.innerHTML=`<div class="page">
       ${pageHead(`Chapter ${c.number}`,c.title,c.subtitle,`<button class="btn ${done?'ghost':'primary'}" id="completeCh">${done?'Marked complete':'Mark chapter complete'}</button>`)}
       ${flowBox}
-      <div class="theory-standard"><strong>v0.6 Deep Theory Standard</strong><span>Every theory section now includes expanded explanations, a concrete worked example, a reasoning flow, an exam trap, Vietnamese key-term links, and an exact “where to review” trail.</span></div>
+      <div class="theory-standard"><strong>v0.6.1 Deep Theory + Annotation</strong><span>Every theory section includes deep explanations and worked examples. Select any sentence or phrase to highlight it, attach your own comment, or turn it into a personal flashcard.</span></div>
+      <div class="annotation-tip"><span>✎</span><div><b>Annotation Mode is on</b><small>Select text inside a theory block → choose a highlight color, add a comment, or save a personal flashcard. Your notes stay on this browser and can be backed up from <a href="#notes">My Notes</a>.</small></div></div>
       <nav class="lesson-route-strip" aria-label="Chapter learning flow">${c.sections.map((s,i)=>`<a href="javascript:void(0)" data-jump="lesson-${i}"><b>${i+1}</b><span>${esc(s.title.replace(/^\d+\.\s*/,''))}</span></a>`).join('<i>→</i>')}</nav>
       <div class="learn-layout"><div class="lesson-stack">${lessonHTML}</div>
-      <aside class="sticky"><div class="card outline-card"><h3>Learning objectives</h3><ul class="objective-list">${c.objectives.map(x=>`<li>${esc(x)}</li>`).join('')}</ul><div class="source-note"><strong>Source trail</strong><br>${esc(c.source)}</div><div class="aside-actions"><a class="btn small primary" href="#practice?chapter=${c.id}">Practice this chapter</a>${c.teacherMapped?'<a class="btn small" href="#mindmap">Open teacher map</a>':''}<a class="btn small" href="#exercises/${c.id}">All source exercises</a></div></div></aside></div>
+      <aside class="sticky"><div class="card outline-card"><h3>Learning objectives</h3><ul class="objective-list">${c.objectives.map(x=>`<li>${esc(x)}</li>`).join('')}</ul><div class="source-note"><strong>Source trail</strong><br>${esc(c.source)}</div><div class="aside-actions"><a class="btn small primary" href="#practice?chapter=${c.id}">Practice this chapter</a>${c.teacherMapped?'<a class="btn small" href="#mindmap">Open teacher map</a>':''}<a class="btn small" href="#exercises/${c.id}">All source exercises</a><a class="btn small" href="#notes">My notes & highlights</a></div></div><div id="chapterAnnotationPanel"></div></aside></div>
     </div>`;
     document.getElementById('completeCh').onclick=()=>{ state.completedChapters[c.id]=!state.completedChapters[c.id]; saveState(); renderLearn(c.id); toast(state.completedChapters[c.id]?'Chapter marked complete':'Chapter reopened'); };
     main.querySelectorAll('[data-jump]').forEach(a=>a.onclick=()=>document.getElementById(a.dataset.jump)?.scrollIntoView({behavior:'smooth',block:'start'}));
+    if(window.AccountingAnnotations) window.AccountingAnnotations.attachChapter({chapterId:c.id,chapterNumber:c.number,chapterTitle:c.title,lessons:c.sections});
   }
 
   function qs(){ return new URLSearchParams((location.hash.split('?')[1]||'')); }
@@ -194,12 +198,16 @@
   }
 
   function renderFlashcards(){
-    const t=D.glossary[flashIndex%D.glossary.length];
-    main.innerHTML=`<div class="page">${pageHead('Recall','Flashcards','Use active recall: say the definition and Vietnamese meaning before flipping the card.')}<div class="flashcard" id="flashCard">${flashBack?`<div class="back"><div class="vi-big">${esc(t.vi)}</div><p>${esc(t.definition)}</p><span class="badge yellow">${esc(t.chapter)}</span></div>`:`<div><div class="front">${esc(t.term)}</div><p>Click to reveal definition + Vietnamese key term.</p></div>`}</div><div class="flash-controls"><button class="btn" id="prevFlash">Previous</button><button class="btn primary" id="flipFlash">Flip</button><button class="btn" id="nextFlash">Next</button></div></div>`;
+    const personal=window.AccountingAnnotations?.getPersonalFlashcards?.()||[];
+    const builtIn=D.glossary.map(t=>({kind:'glossary',front:t.term,back:t.definition,vi:t.vi,chapter:t.chapter}));
+    const custom=personal.map(t=>({kind:'personal',front:t.front,back:t.back,vi:'My personal card',chapter:`Ch ${t.chapterNumber||''} · ${t.lessonTitle||t.chapterTitle||'Theory'}`}));
+    const deck=[...builtIn,...custom];
+    const t=deck[flashIndex%Math.max(1,deck.length)]||{front:'No cards yet',back:'Create a personal flashcard from any highlighted theory passage.',vi:'',chapter:''};
+    main.innerHTML=`<div class="page">${pageHead('Recall','Flashcards',`Use active recall before flipping. Built-in glossary cards: ${builtIn.length} · Personal cards from highlights: ${custom.length}.`)}<div class="flash-deck-meta"><span class="badge ${t.kind==='personal'?'black':'yellow'}">${t.kind==='personal'?'PERSONAL HIGHLIGHT':'COURSE GLOSSARY'}</span><span>${flashIndex+1} / ${deck.length}</span></div><div class="flashcard" id="flashCard">${flashBack?`<div class="back"><div class="vi-big">${esc(t.vi||'Explanation')}</div><p>${esc(t.back)}</p><span class="badge yellow">${esc(t.chapter)}</span></div>`:`<div><div class="front">${esc(t.front)}</div><p>${t.kind==='personal'?'Your own card created from a theory highlight.':'Click to reveal definition + Vietnamese key term.'}</p></div>`}</div><div class="flash-controls"><button class="btn" id="prevFlash">Previous</button><button class="btn primary" id="flipFlash">Flip</button><button class="btn" id="nextFlash">Next</button></div>${custom.length?'<p class="flash-hint">Personal cards are stored with My Notes and are included in annotation backup export/import.</p>':''}</div>`;
     document.getElementById('flashCard').onclick=()=>{flashBack=!flashBack;renderFlashcards()};
     document.getElementById('flipFlash').onclick=()=>{flashBack=!flashBack;renderFlashcards()};
-    document.getElementById('prevFlash').onclick=()=>{flashIndex=(flashIndex-1+D.glossary.length)%D.glossary.length;flashBack=false;renderFlashcards()};
-    document.getElementById('nextFlash').onclick=()=>{flashIndex=(flashIndex+1)%D.glossary.length;flashBack=false;renderFlashcards()};
+    document.getElementById('prevFlash').onclick=()=>{flashIndex=(flashIndex-1+deck.length)%deck.length;flashBack=false;renderFlashcards()};
+    document.getElementById('nextFlash').onclick=()=>{flashIndex=(flashIndex+1)%deck.length;flashBack=false;renderFlashcards()};
   }
 
   function renderFormula(){
@@ -248,7 +256,7 @@
 
   function render(){
     closeMenu(); setActive(); updateProgressUI(); const [r,a]=route();
-    if(r==='dashboard')renderDashboard(); else if(r==='mindmap')renderMindMap(); else if(r==='learn')renderLearn(a); else if(r==='practice')initPractice(); else if(r==='exercises')window.ExerciseBank.render(main,a); else if(r==='lab')window.AccountingLab.render(); else if(r==='mistakes')renderMistakes(); else if(r==='flashcards')renderFlashcards(); else if(r==='formula')renderFormula(); else if(r==='exam')renderExam(); else if(r==='glossary')renderGlossary(); else if(r==='sources')renderSources(); else if(r==='search')renderSearch(); else if(r==='cases')renderCase(a); else renderDashboard();
+    if(r==='dashboard')renderDashboard(); else if(r==='mindmap')renderMindMap(); else if(r==='learn')renderLearn(a); else if(r==='practice')initPractice(); else if(r==='exercises')window.ExerciseBank.render(main,a); else if(r==='lab')window.AccountingLab.render(); else if(r==='mistakes')renderMistakes(); else if(r==='notes'&&window.AccountingAnnotations)window.AccountingAnnotations.renderNotes(main,D); else if(r==='flashcards')renderFlashcards(); else if(r==='formula')renderFormula(); else if(r==='exam')renderExam(); else if(r==='glossary')renderGlossary(); else if(r==='sources')renderSources(); else if(r==='search')renderSearch(); else if(r==='cases')renderCase(a); else renderDashboard();
     setActive(); main.focus({preventScroll:true}); window.scrollTo(0,0);
   }
   window.addEventListener('hashchange',render);
