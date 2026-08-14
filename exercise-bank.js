@@ -1,0 +1,42 @@
+(() => {
+  const X = window.ACCOUNTING_EXERCISES;
+  const esc = (s='') => String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+  const getQ = () => new URLSearchParams((location.hash.split('?')[1]||''));
+  const mapLab = {ch1:'equation',ch2:'journal',ch3:'adjusting',ch4:'cycle',ch5:'merch',ch6:'fifo',ch14:'cashflow'};
+  function counts(c){ const f=c.formalCounts; return `${f.doit} DO IT · ${f.brief} BE · ${f.exercise} E · ${f.problem} P · ${f.gaap} GAAP`; }
+  function packCard(p,idx,prefix){
+    return `<details class="exercise-source" ${idx===0?'open':''}><summary><div><span class="badge yellow">${esc(p.kind)}</span><h3>${esc(p.title)}</h3><small>${esc(p.source)}</small></div><span class="chev">＋</span></summary><div class="exercise-source-body"><div class="source-note">Source-faithful exercise content. Wording/solutions are shown only when present in the supplied source.</div><pre class="exercise-pre">${esc(p.text)}</pre></div></details>`;
+  }
+  function sectionCard(s,idx){
+    return `<details class="exercise-source" ${idx===0?'open':''}><summary><div><span class="badge">${esc(s.kind)}</span><h3>${esc(s.title)}</h3><small>Weygandt & Kimmel · IFRS 5e</small></div><span class="chev">＋</span></summary><div class="exercise-source-body"><pre class="exercise-pre">${esc(s.text)}</pre></div></details>`;
+  }
+  function renderHome(main){
+    const S=X.summary;
+    main.innerHTML=`<div class="page"><div class="hero-strip exercise-hero"><div class="hero-copy"><span class="hero-kicker">FULL SOURCE EXERCISE LIBRARY</span><h1>Every chapter. Every textbook exercise section.</h1><p>The original v3 practice bank had only a curated set. This library adds the complete end-of-chapter exercise material from all 15 ebook chapters, plus chapter-mapped class workbooks, lecture exercises, test banks, and comprehensive exam packs.</p><div class="hero-actions"><a class="btn primary" href="#exercises/ch1">Open Chapter 1</a><a class="btn hero-ghost" href="#practice">Interactive MCQs</a></div></div></div>
+    <div class="grid four exercise-metrics"><div class="card metric"><div class="kicker">Ebook</div><strong>${S.ebookChapters}</strong><small>chapters with complete exercise sections</small></div><div class="card metric"><div class="kicker">Formal IDs</div><strong>${S.formalNumberedItems}</strong><small>DO IT / BE / E / P / GAAP numbered items</small></div><div class="card metric"><div class="kicker">Source packs</div><strong>${S.allSourcePacks}</strong><small>workbooks, slides, testbanks and exams</small></div><div class="card metric"><div class="kicker">Rule</div><strong>100%</strong><small>source-faithful: no invented missing answers</small></div></div>
+    <div class="section-title"><div><h2>Exercises by Chapter</h2><p>Chapters 1–15 from the ebook. Theory pages can remain focused on your current course chapters.</p></div></div>
+    <div class="exercise-chapter-grid">${X.chapters.map(c=>`<a class="card exercise-chapter-card" href="#exercises/${c.id}"><div class="ch-no">${String(c.number).padStart(2,'0')}</div><div><h3>${esc(c.title)}</h3><p>${esc(counts(c))}</p><small>${c.sourcePacks.length} additional uploaded source pack${c.sourcePacks.length===1?'':'s'}</small></div></a>`).join('')}</div>
+    <div class="section-title"><div><h2>Comprehensive Exams & Mixed Sources</h2><p>These sources span multiple chapters, so they are kept intact rather than being falsely assigned to one chapter.</p></div></div><div class="card"><p><strong>${X.comprehensive.length} full packs</strong> including FTU midterms, long-form accounting-cycle exams, and final review material.</p><a class="btn small primary" style="margin-top:10px" href="#exercises/comprehensive">Open comprehensive packs</a></div></div>`;
+  }
+  function renderChapter(main,id){
+    const c=X.chapters.find(x=>x.id===id)||X.chapters[0];
+    const lab=mapLab[c.id];
+    main.innerHTML=`<div class="page"><div class="page-head"><div><div class="eyebrow">Full Exercise Library · Chapter ${c.number}</div><h1>${esc(c.title)}</h1><p>${esc(counts(c))}. The full textbook exercise section is preserved below, followed by every mapped uploaded source pack.</p></div><div class="head-actions"><a class="btn" href="#exercises">All chapters</a>${lab?`<a class="btn primary" href="#lab?template=${lab}">Open matching Lab</a>`:''}</div></div>
+    <div class="exercise-toolbar"><input id="exerciseSearch" class="control" placeholder="Search inside this chapter: FIFO, depreciation, E3.12…"><button class="btn small" id="clearExerciseSearch">Clear</button></div>
+    <div class="chapter-exercise-summary"><span class="badge yellow">Textbook · complete EOC exercise bank</span><span class="badge">${c.ebook.sections.length} textbook sections</span><span class="badge">${c.sourcePacks.length} uploaded chapter packs</span></div>
+    <section id="workedDoItHost"><div class="section-title"><div><h2>In-Chapter Worked DO IT Examples</h2><p>Worked exercise boxes from the chapter body, including the source Action Plan and solution when present.</p></div></div>${c.ebook.workedDoIts&&c.ebook.workedDoIts.length?c.ebook.workedDoIts.map(sectionCard).join(''):'<div class="empty">No separate worked DO IT block was extractable from this chapter layout.</div>'}</section>
+    <section id="ebookExerciseHost"><div class="section-title"><div><h2>End-of-Chapter Textbook Exercises — IFRS 5e</h2><p>Practice MCQs, brief exercises, exercises, problems, cases/applications, and GAAP practice exactly as available in the ebook.</p></div></div>${c.ebook.sections.map(sectionCard).join('')}</section>
+    <section id="sourceExerciseHost"><div class="section-title"><div><h2>Uploaded Sources for Chapter ${c.number}</h2><p>Class workbook exercises, lecture DO IT pages, and test banks mapped to this chapter.</p></div></div>${c.sourcePacks.length?c.sourcePacks.map(packCard).join(''):'<div class="empty">No separate uploaded source pack mapped to this chapter yet; the full ebook exercise section is included.</div>'}</section>
+    <div class="source-note" style="margin-top:18px"><strong>Completeness note.</strong> The ebook section begins at “Practice Multiple-Choice Questions” and continues through the end-of-chapter assignment/case/GAAP material. Numbered counts are a lower-bound index of formal DO IT, Brief Exercise, Exercise, Problem, and GAAP items; review questions and cases add additional prompts.</div></div>`;
+    const input=document.getElementById('exerciseSearch');
+    const clear=document.getElementById('clearExerciseSearch');
+    function filter(){ const q=input.value.toLowerCase().trim(); document.querySelectorAll('.exercise-source').forEach(d=>{ const hit=!q||d.textContent.toLowerCase().includes(q); d.style.display=hit?'':'none'; if(q&&hit)d.open=true; }); }
+    input.oninput=filter; clear.onclick=()=>{input.value='';filter();};
+  }
+  function renderComprehensive(main){
+    main.innerHTML=`<div class="page"><div class="page-head"><div><div class="eyebrow">Mixed-chapter source packs</div><h1>Comprehensive Exams & Reviews</h1><p>Full source documents that intentionally span multiple chapters. Chapter tags are shown, but the original exercise set is kept intact.</p></div><a class="btn" href="#exercises">Back to chapters</a></div><div class="exercise-toolbar"><input id="exerciseSearch" class="control" placeholder="Search comprehensive sources…"><button class="btn small" id="clearExerciseSearch">Clear</button></div>${X.comprehensive.map((p,i)=>`<details class="exercise-source" ${i===0?'open':''}><summary><div><span class="badge yellow">${esc(p.kind)}</span><h3>${esc(p.title)}</h3><small>${esc(p.source)} · ${p.chapterTags.map(x=>'Ch '+x.replace('ch','')).join(', ')}</small></div><span class="chev">＋</span></summary><div class="exercise-source-body">${p.note?`<div class="source-note">${esc(p.note)}</div>`:''}<pre class="exercise-pre">${esc(p.text)}</pre></div></details>`).join('')}</div>`;
+    const input=document.getElementById('exerciseSearch'); const clear=document.getElementById('clearExerciseSearch');
+    function filter(){const q=input.value.toLowerCase().trim();document.querySelectorAll('.exercise-source').forEach(d=>{const hit=!q||d.textContent.toLowerCase().includes(q);d.style.display=hit?'':'none';if(q&&hit)d.open=true;});} input.oninput=filter;clear.onclick=()=>{input.value='';filter();};
+  }
+  window.ExerciseBank={render(main,id){ if(!id)renderHome(main); else if(id==='comprehensive')renderComprehensive(main); else renderChapter(main,id); }};
+})();
