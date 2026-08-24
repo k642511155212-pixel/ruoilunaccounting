@@ -14,10 +14,10 @@ Bạn cũng có thể chọn **Deploy from a branch → main / root** vì websit
 ## Cấu trúc
 
 - `index.html`: khung website và metadata.
-- `styles.css`: toàn bộ design system responsive.
+- `styles.css`: toàn bộ design system responsive; cinematic hero đã được nhúng trực tiếp để không bị lỗi đường dẫn ảnh.
 - `app.bundle.js`: self-contained course data and application logic. This single root file prevents missing `content/` files on GitHub Pages.
 - `app.js`: editable application source.
 - `content/`: dữ liệu chương, câu hỏi, key terms, lý thuyết sâu và bài tập bổ sung.
-- `assets/`: cinematic landscape hero và SVG favicon.
+- `assets/`: bản nguồn của hero và bộ logo/icon để chỉnh sửa hoặc dùng cho social preview.
 
-Important: upload `index.html`, `styles.css`, `app.bundle.js`, and the `assets` folder. The remaining source folders are included for future editing. Progress, notes, and the mistake notebook are stored in the learner's browser using `localStorage`.
+Important: luôn thay đồng thời ba file gốc `index.html`, `styles.css` và `app.bundle.js`. Logo header, favicon và hero hiển thị trong trang đã được nhúng trực tiếp, nên ba file này vẫn hoạt động kể cả khi GitHub bỏ sót thư mục `assets`. Tuy vậy, nên upload toàn bộ gói để giữ đủ file nguồn và social preview. Progress, notes, and the mistake notebook are stored in the learner's browser using `localStorage`.
