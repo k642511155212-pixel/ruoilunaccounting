@@ -1,4 +1,4 @@
-/* Ruoilun Accounting Mastery — self-contained GitHub Pages bundle */
+/* zuòi lùn Accounting Mastery — self-contained GitHub Pages bundle */
 window.AM_VISUALS = new Proxy({}, { get: function () { return ''; } });
 
 /* ===== content/data.js ===== */
@@ -8189,7 +8189,7 @@ window.ACCOUNTING_MINDMAP = {
     updateProgressUI();
     document.getElementById("mobile-menu").hidden = true;
     document.querySelector(".menu-button").setAttribute("aria-expanded", "false");
-    document.title = name === "home" ? "Ruoilun Accounting Mastery" : (main.querySelector("h1")?.textContent || "Ruoilun") + " · Ruoilun";
+    document.title = name === "home" ? "zuòi lùn Accounting Mastery" : (main.querySelector("h1")?.textContent || "zuòi lùn") + " · zuòi lùn";
   }
 
   document.querySelectorAll("[data-route]").forEach((button) => button.addEventListener("click", () => navigate(button.dataset.route)));
