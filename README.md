@@ -1,82 +1,22 @@
-# Accounting Mastery v0.6.1 — Deep Theory + Annotation Edition
+# Ruoilun Accounting Mastery
 
+Website học Financial Accounting theo IFRS bằng tiếng Việt, gồm 15 chương, 802 câu hỏi tương tác, 74 thuật ngữ Việt–Anh và 15 bài tập tự luận có lời giải từng bước.
 
-## v0.6.1 — Annotation Mode
+## Đưa lên GitHub Pages
 
-- Highlight any word, phrase, or sentence inside **Learn** lessons.
-- Four semantic highlight colors: **Important**, **Exam trap**, **Understood/example**, and **Definition**.
-- Attach comments to highlights and edit them later by clicking the highlighted text.
-- **My Notes** collects annotations from every chapter with search, chapter/type filters, and jump-back-to-source links.
-- Notes persist in `localStorage` on the current browser.
-- **Export backup** / **Import backup** uses a JSON file so annotations can be moved between browsers/devices or preserved before future site updates.
-- Selected theory can be turned into a **personal flashcard**; personal cards appear together with the built-in glossary deck.
-- Annotation anchoring stores the exact selection plus surrounding text instead of only raw HTML offsets, making highlights more resilient when lesson markup changes.
+1. Tạo repository mới trên GitHub.
+2. Upload toàn bộ file và thư mục trong gói này vào nhánh `main` (giữ `index.html` ở thư mục gốc).
+3. Vào **Settings → Pages → Build and deployment**.
+4. Chọn **GitHub Actions**. Workflow có sẵn sẽ tự triển khai website.
 
-## v0.6 theory-depth upgrade
+Bạn cũng có thể chọn **Deploy from a branch → main / root** vì website là static HTML, CSS và JavaScript, không cần cài package hay build.
 
-- Teacher mind map remains the primary learning flow for mapped course topics.
-- Every theory section now contains expanded concept explanations rather than short bullet-only notes.
-- Every lesson section contains a concrete worked example and a step-by-step reasoning flow.
-- Added active-recall checks, exam traps, bilingual term links, and visible “Read again here” source locations.
-- Chapters outside the supplied teacher map remain clearly labeled **Textbook Extension** and are still explained from the IFRS 5e ebook.
-- Existing v0.5 exercise library, generated practice, Accounting Lab, mistake notebook, exam mode, and image fixes are preserved.
+## Cấu trúc
 
+- `index.html`: khung website và metadata.
+- `styles.css`: toàn bộ design system responsive.
+- `app.js`: router, học theo chương, luyện tập, glossary, bài tự luận, ghi chú và tiến độ.
+- `content/`: dữ liệu chương, câu hỏi, key terms, lý thuyết sâu và bài tập bổ sung.
+- `assets/`: cinematic landscape hero và SVG favicon.
 
-Static GitHub Pages study system for Principles of Accounting.
-
-## Core design decision
-
-**Teacher mind map first; textbook/slides second.**
-
-The supplied `4. Principles of Accounting 8.26.html` MindManager map is now the primary conceptual architecture for the Learn experience. The Weygandt & Kimmel IFRS 5e textbook, lecture slides, workbooks, FTU tests, and other supplied sources are used to expand each node with rigorous definitions, worked examples, edge cases, practice, and verification.
-
-### Teacher-flow branches
-
-1. Forms of organizations
-2. Assumptions & Principles
-3. Elements of Financial Statements
-4. Financial Statements
-5. Flow of Accounting
-6. Merchandising Operations
-
-The **Flow of Accounting** is rendered explicitly as:
-
-Analyze transaction → Journalize → Post to ledger → Trial balance → Adjusting entries → Adjusted trial balance → Financial statements → Closing entries → Post-closing trial balance.
-
-Chapters 1–6 and 14 are reorganized around the relevant teacher-mind-map nodes. Chapters 7–13 and 15 are clearly labeled **Textbook Extensions** where the teacher mind map does not contain an explicit branch.
-
-## Practice system
-
-- **802 interactive explained questions** in the current build.
-  - 72 prior/source-adapted interactive questions.
-  - 730 course-original variants generated from the supplied question patterns and accounting concepts.
-- Every generated question includes:
-  - correct answer,
-  - detailed reasoning,
-  - where to review the concept in the website,
-  - teacher-mind-map path where applicable,
-  - textbook chapter/LO cross-check,
-  - topic, type, chapter, difficulty, and origin tags.
-- Full source/textbook exercise library remains separate under **All Exercises**.
-- Mistake Notebook keeps the review location attached to missed questions.
-
-## Theory
-
-- 15 chapters available.
-- Chapters 1–6 and 14 are **mindmap-first**.
-- Chapters 7–13 and 15 are **textbook extensions**.
-- English-first explanations with Vietnamese key-term support.
-- Theory is expanded rather than reduced to Learning Objectives; each lesson includes rule, meaning, examples, connections, common traps, and source/review pointers.
-
-## Other features
-
-- Teacher Mind Map explorer.
-- Accounting Lab with reusable working templates.
-- Full Exercise Library from textbook and supplied sources.
-- Flashcards, Formula Sheet, Glossary, Search, Exam Mode, progress tracking, and Mistake Notebook.
-- Yellow / black visual system.
-- Build-free deployment on GitHub Pages.
-
-## GitHub Pages
-
-Upload all files in this folder to the repository root and deploy from `main / (root)` in **Settings → Pages**. No npm/Vite/React build is required.
+Tiến độ, ghi chú và sổ lỗi sai được lưu bằng `localStorage` trên trình duyệt của người học.
