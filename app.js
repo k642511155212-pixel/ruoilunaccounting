@@ -17,7 +17,12 @@
     selectedAnswer: null,
     practiceFilters: { query: "", chapter: "all", difficulty: "all" },
     glossaryQuery: "",
-    glossaryLetter: "ALL"
+    glossaryLetter: "ALL",
+    flashcardIndex: 0,
+    flashcardRevealed: false,
+    examQuestions: [],
+    examAnswers: {},
+    examSubmitted: false
   };
 
   function readStore(key, fallback) {
@@ -33,7 +38,7 @@
     try {
       localStorage.setItem("ruoilun:" + key, JSON.stringify(value));
     } catch (_) {
-      toast("Trình duyệt đang chặn lưu cục bộ. Nội dung vẫn có thể đọc bình thường.");
+      toast("The browser is blocking local saving. Course content remains available.");
     }
   }
 
@@ -76,7 +81,8 @@
   }
 
   function getChapter(id) {
-    return (D.chapters || []).find((chapter) => chapter.id === id) || D.chapters?.[0];
+    if (!id) return D.chapters?.[0];
+    return (D.chapters || []).find((chapter) => chapter.id === id);
   }
 
   function routeParts() {
@@ -130,14 +136,14 @@
       <a class="chapter-card" href="#chapter/${esc(chapter.id)}">
         <div class="chapter-card-top">
           <span class="chapter-number">CH ${esc(chapter.number)}</span>
-          <span class="chapter-status ${done ? "done" : ""}">${done ? "Đã hoàn thành" : "Chưa học"}</span>
+          <span class="chapter-status ${done ? "done" : ""}">${done ? "Completed" : "Open access"}</span>
         </div>
         <div class="chapter-card-copy">
-          <h3>${esc(titleVi(chapter))}</h3>
-          <p>${esc(chapter.title)} · ${esc(chapter.sections?.length || 0)} chuyên đề được giải thích theo bản chất.</p>
+          <h3>${esc(chapter.title)}</h3>
+          <p>${esc(chapter.subtitle)}</p>
           <div class="chapter-meta">
-            <span>${esc(chapter.objectives?.length || 0)} mục tiêu</span>
-            <span>${esc(questionCount)} câu luyện tập</span>
+            <span>${esc(chapter.sections?.length || 0)} full lessons</span>
+            <span>${esc(questionCount)} practice questions</span>
           </div>
         </div>
       </a>`;
@@ -186,50 +192,50 @@
             ${heroContours()}
             <div class="hero-inner">
               <div class="hero-copy">
-                <span class="eyebrow">Financial Accounting · IFRS · Việt–Anh</span>
-                <h1 id="hero-title">Hiểu bản chất.<em>Ghi đúng từng bút toán.</em></h1>
-                <p class="hero-lead">Một không gian học kế toán tài chính từ nền tảng đến phân tích báo cáo: lý thuyết đủ sâu, thuật ngữ tiếng Việt chuẩn xác, bài tập theo từng chương và lời giải chỉ rõ vì sao.</p>
+                <span class="eyebrow">Financial Accounting · IFRS · English-first</span>
+                <h1 id="hero-title">Understand the logic.<em>Record with confidence.</em></h1>
+                <p class="hero-lead">A complete English-taught Financial Accounting course: all 15 chapters are open from the start, with deep theory, worked examples, exam traps, and Vietnamese support for key terms.</p>
                 <div class="hero-actions">
-                  <a class="button primary" href="#learn">Bắt đầu lộ trình <span aria-hidden="true">→</span></a>
-                  <a class="button ghost" href="#practice">Làm câu hỏi ngay</a>
+                  <a class="button primary" href="#learn">Browse all 15 chapters <span aria-hidden="true">→</span></a>
+                  <a class="button ghost" href="#practice">Start practice</a>
                 </div>
               </div>
-              <aside class="hero-panel" aria-label="Lộ trình khởi động">
-                <div class="hero-panel-label"><span>BẮT ĐẦU ĐÚNG NỀN</span><span>3 điểm chạm</span></div>
+              <aside class="hero-panel" aria-label="Quick chapter access">
+                <div class="hero-panel-label"><span>JUMP TO ANY CHAPTER</span><span>No locked lessons</span></div>
                 <div class="hero-route">
-                  <a href="#chapter/ch1"><b>01</b><span>Phương trình kế toán</span><small>Hiểu bản chất</small></a>
-                  <a href="#chapter/ch2"><b>02</b><span>Nợ / Có và chu trình ghi sổ</span><small>Làm chủ cơ chế</small></a>
-                  <a href="#chapter/ch3"><b>03</b><span>Cơ sở dồn tích và điều chỉnh</span><small>Đúng kỳ kế toán</small></a>
+                  <a href="#chapter/ch1"><b>01</b><span>Accounting in Action</span><small>Accounting equation</small></a>
+                  <a href="#chapter/ch2"><b>02</b><span>The Recording Process</span><small>Debit, credit, journal, ledger</small></a>
+                  <a href="#chapter/ch15"><b>15</b><span>Financial Statement Analysis</span><small>Open the final chapter directly</small></a>
                 </div>
               </aside>
             </div>
           </section>
 
-          <section class="metric-ribbon" aria-label="Quy mô học liệu">
-            <div class="metric"><b>${esc(D.chapters?.length || 15)}</b><span>chương theo IFRS</span></div>
-            <div class="metric"><b>${esc(D.questions?.length || 0)}</b><span>câu hỏi tương tác</span></div>
-            <div class="metric"><b>${esc(D.glossary?.length || 0)}</b><span>key terms Việt–Anh</span></div>
-            <div class="metric"><b>Local</b><span>lưu tiến độ riêng tư</span></div>
+          <section class="metric-ribbon" aria-label="Course coverage">
+            <div class="metric"><b>${esc(D.chapters?.length || 0)}</b><span>complete IFRS chapters</span></div>
+            <div class="metric"><b>${esc(D.questions?.length || 0)}</b><span>interactive questions</span></div>
+            <div class="metric"><b>${esc(D.glossary?.length || 0)}</b><span>bilingual key terms</span></div>
+            <div class="metric"><b>Open</b><span>no chapter prerequisites</span></div>
           </section>
 
           <section class="section-block">
-            <div class="section-heading"><div><span class="eyebrow">The learning loop</span><h2>Học theo logic, không học thuộc máy móc.</h2><p>Mỗi chuyên đề đi qua bốn lớp: kinh tế thực → phân tích tài khoản → ghi nhận → tự kiểm tra.</p></div></div>
+            <div class="section-heading"><div><span class="eyebrow">The learning loop</span><h2>Learn the logic, not isolated rules.</h2><p>Every lesson moves from economic substance to account analysis, recording, and a final check.</p></div></div>
             <div class="learning-loop">
-              <article class="loop-card" data-step="1"><div class="icon-tile">◎</div><h3>Understand</h3><p>Nhận diện sự kiện kinh tế, đối tượng chịu ảnh hưởng và thời điểm ghi nhận.</p></article>
-              <article class="loop-card" data-step="2"><div class="icon-tile">◇</div><h3>Analyze</h3><p>Phân loại tài sản, nợ phải trả, vốn, doanh thu, chi phí trước khi nghĩ đến Nợ/Có.</p></article>
-              <article class="loop-card" data-step="3"><div class="icon-tile">↗</div><h3>Record</h3><p>Ghi nhật ký, chuyển sổ, lập bảng cân đối thử và truy vết dòng số liệu.</p></article>
-              <article class="loop-card" data-step="4"><div class="icon-tile">✓</div><h3>Review</h3><p>Đối chiếu phương trình, Nợ = Có, kỳ ghi nhận và ảnh hưởng lên báo cáo.</p></article>
+              <article class="loop-card" data-step="1"><div class="icon-tile">◎</div><h3>Understand</h3><p>Identify the economic event, the reporting entity, and the recognition point.</p></article>
+              <article class="loop-card" data-step="2"><div class="icon-tile">◇</div><h3>Analyze</h3><p>Classify assets, liabilities, equity, revenues, and expenses before choosing debit or credit.</p></article>
+              <article class="loop-card" data-step="3"><div class="icon-tile">↗</div><h3>Record</h3><p>Journalize, post to the ledger, prepare a trial balance, and trace the reporting flow.</p></article>
+              <article class="loop-card" data-step="4"><div class="icon-tile">✓</div><h3>Review</h3><p>Check the accounting equation, debit = credit, recognition period, and statement effects.</p></article>
             </div>
           </section>
 
           <section class="section-block">
-            <div class="section-heading"><div><span class="eyebrow">15-chapter path</span><h2>Lộ trình từ nguyên lý đến phân tích.</h2><p>Nội dung bám cấu trúc giáo trình Financial Accounting IFRS 5e, được Việt hóa theo ngữ nghĩa kế toán thay vì dịch từng chữ.</p></div><a class="text-link" href="#learn">Xem đủ 15 chương</a></div>
+            <div class="section-heading"><div><span class="eyebrow">15-chapter library</span><h2>Open any chapter, in any order.</h2><p>The complete Financial Accounting IFRS 5e learning path is visible immediately. There is no completion gate.</p></div><a class="text-link" href="#learn">View the full set</a></div>
             <div class="chapter-grid">${firstChapters}</div>
           </section>
 
           <section class="section-block trust-strip">
-            <div class="trust-copy"><span class="eyebrow">Terminology matters</span><h2>Dịch đúng thuật ngữ là bước đầu của tư duy đúng.</h2><p>Website phân biệt rõ doanh thu với lợi nhuận, bên Nợ/Có với tăng/giảm, và lợi nhuận giữ lại với chi phí. Mỗi key term có định nghĩa tiếng Anh lẫn diễn giải tiếng Việt.</p></div>
-            <div class="correction-card"><h3>Ba lỗi dịch cần sửa ngay</h3><div class="correction-list">${corrections}</div></div>
+            <div class="trust-copy"><span class="eyebrow">Vietnamese key-term support</span><h2>The lesson stays in English. Translation appears only where terminology needs it.</h2><p>Core teaching, examples, objectives, and solutions use English. The glossary provides accurate Vietnamese equivalents for terms such as revenue, retained earnings, debit, and credit.</p></div>
+            <div class="correction-card"><h3>Three translation traps to avoid</h3><div class="correction-list">${corrections}</div></div>
           </section>
         </div>
       </div>`;
@@ -238,7 +244,7 @@
   function renderLearn() {
     main.innerHTML = `
       <div class="page-shell"><div class="content-width">
-        ${routeHead("Lộ trình đầy đủ", "15 chương, một mạch tư duy.", "Bắt đầu từ bản chất của phương trình kế toán, đi qua chu trình ghi sổ và kết thúc ở dòng tiền, tỷ số tài chính. Mỗi chương có mục tiêu, ví dụ, bẫy thi và bài tập riêng.", `<a class="button primary" href="#chapter/ch1">Bắt đầu Chương 01</a><a class="button ghost" href="#exercises">Xem bài tự luận</a>`)}
+        ${routeHead("Complete course library", "All 15 chapters are available now.", "Start with Chapter 1 or jump directly to any later topic. Every chapter contains full theory, learning objectives, worked examples, exam traps, review prompts, and chapter-specific practice.", `<a class="button primary" href="#chapter/ch1">Open Chapter 01</a><a class="button ghost" href="#chapter/ch15">Jump to Chapter 15</a><a class="button ghost" href="#exercises">Worked problems</a>`)}
         <div class="chapter-grid">${(D.chapters || []).map(chapterCard).join("")}</div>
       </div></div>`;
   }
@@ -286,64 +292,132 @@
     return colon > 0 && colon < 62 ? text.slice(0, colon) : text.slice(0, 105) + (text.length > 105 ? "…" : "");
   }
 
+  function glossaryMatch(point) {
+    const lower = String(point || "").toLowerCase();
+    return (D.glossary || []).find((item) => {
+      const term = item.term.toLowerCase();
+      return lower === term || lower.startsWith(term + ":") || lower.startsWith(term + " ") || lower.startsWith(term + "/");
+    });
+  }
+
+  function keyTermSupport(point) {
+    const item = glossaryMatch(point);
+    if (!item) return "";
+    const explanation = Extra.glossaryVi?.[item.term.toLowerCase()];
+    return `<div class="explain-pane vi"><span>Key term · Vietnamese support</span><strong>${esc(item.term)} — ${esc(item.vi)}</strong><br>${esc(explanation || item.vi)}</div>`;
+  }
+
   function termsHtml(terms) {
     if (!terms?.length) return "";
     return `<div class="term-row">${terms.map((term) => `<button class="term-chip" type="button" data-term="${esc(term)}">${esc(term)}</button>`).join("")}</div>`;
   }
 
-  function renderChapter(id) {
+  function sectionQuestion(chapter, section, sectionIndex) {
+    const pool = (D.questions || []).filter((question) => question.chapter === chapter.id);
+    if (!pool.length) return null;
+    const tokens = norm([section.title, section.lead, ...(section.terms || [])].join(" ")).split(/\s+/).filter((token) => token.length > 3);
+    const ranked = pool.map((question, index) => {
+      const haystack = norm([question.topic, question.question, question.explanation].join(" "));
+      const score = tokens.reduce((sum, token) => sum + (haystack.includes(token) ? 1 : 0), 0);
+      return { question, score, index };
+    }).sort((a, b) => b.score - a.score || a.index - b.index);
+    return ranked[0]?.score > 0 ? ranked[0].question : pool[sectionIndex % pool.length];
+  }
+
+  function distractorExplanation(question, optionIndex) {
+    if (optionIndex === question.answer) return question.explanation;
+    const option = norm(question.options[optionIndex]);
+    const context = norm(question.question + " " + question.explanation);
+    if (/no entry|wait until cash|when cash/.test(option) && /earned|incurred|accru|receivable|payable/.test(context)) {
+      return "This choice incorrectly waits for cash. Under accrual accounting, recognition follows when revenue is earned or an expense is incurred, not merely when cash moves.";
+    }
+    if (/dr .*revenue|debit .*revenue/.test(option)) {
+      return "This choice places revenue on the debit side even though revenue normally increases equity and carries a credit balance. A debit would reduce or close revenue rather than record revenue earned.";
+    }
+    if (/cr .*expense|credit .*expense/.test(option)) {
+      return "This choice credits an expense even though an expense normally increases on the debit side. A credit would reduce or close an expense account.";
+    }
+    if (/cash/.test(option) && /not yet|unpaid|on account|receivable|payable/.test(context)) {
+      return "This choice uses Cash even though the facts say cash has not moved. The counterpart should normally be a receivable, payable, prepaid item, or unearned revenue depending on the recognition status.";
+    }
+    if (/asset|liabil|equity|revenue|expense/.test(context)) {
+      return "This choice misclassifies at least one financial-statement element or gives it the wrong direction. Reclassify each account first, decide whether it increases or decreases, and only then apply debit and credit rules.";
+    }
+    return `This choice proposes “${question.options[optionIndex]},” but it does not satisfy the recognition rule and dual effect described in the correct explanation. Check the event, the accounts affected, and the required direction for each account.`;
+  }
+
+  function inlineQuizHtml(question, chapter, sectionIndex) {
+    if (!question) return "";
+    return `
+      <section class="knowledge-check" data-inline-quiz="${esc(question.id)}" data-section-index="${sectionIndex}">
+        <div class="knowledge-head">
+          <div><span class="micro-label">Knowledge check · 1 minute</span><h3>Can you apply the lesson immediately?</h3></div>
+          <span class="tag accent">${esc(question.topic)}</span>
+        </div>
+        <p class="knowledge-question">${esc(question.question)}</p>
+        <div class="knowledge-options">${question.options.map((option, optionIndex) => `<button type="button" data-inline-answer="${optionIndex}"><b>${String.fromCharCode(65 + optionIndex)}</b><span>${esc(option)}</span></button>`).join("")}</div>
+        <div class="knowledge-feedback" aria-live="polite"></div>
+        <div class="knowledge-foot"><span>Based on ${esc(question.source || chapter.source)}</span><a href="#practice/${chapter.id}">More Chapter ${esc(chapter.number)} practice →</a></div>
+      </section>`;
+  }
+
+  function renderChapter(id, anchor) {
     const chapter = getChapter(id);
     if (!chapter) return renderNotFound();
+    writeStore("lastChapter", chapter.id);
     const index = D.chapters.indexOf(chapter);
     const prev = D.chapters[index - 1];
     const next = D.chapters[index + 1];
     const done = completedSet().has(chapter.id);
-    const nav = chapter.sections.map((section, i) => `<a href="#section-${i + 1}"><b>${i + 1}</b><span>${esc(section.title)}</span></a>`).join("");
+    const nav = chapter.sections.map((section, i) => `<a href="#chapter/${chapter.id}/section-${i + 1}"><b>${i + 1}</b><span>${esc(section.title)}</span></a>`).join("");
     const objectives = (chapter.objectives || []).map((item, i) => `<div class="objective"><b>LO${i + 1}</b><span>${esc(item)}</span></div>`).join("");
     const why = typeof Deep.whyChapter === "function" ? Deep.whyChapter(chapter) : chapter.subtitle;
 
     const sections = chapter.sections.map((section, sIndex) => {
+      const quickQuestion = sectionQuestion(chapter, section, sIndex);
       const points = (section.body || []).map((point, pIndex) => {
         const deep = typeof Deep.explainPoint === "function" ? Deep.explainPoint(point, section, chapter) : point;
+        const termSupport = keyTermSupport(point);
         return `
           <details class="point-card" ${pIndex === 0 ? "open" : ""}>
             <summary><b>${pIndex + 1}</b><span class="point-title">${esc(pointTitle(point))}</span><span class="point-toggle" aria-hidden="true"></span></summary>
-            <div class="point-explanation">
-              <div class="explain-pane"><span>Accounting logic · EN</span>${esc(deep)}</div>
-              <div class="explain-pane vi"><span>Diễn giải tiếng Việt</span>${esc(viExplanation(point))}</div>
+            <div class="point-explanation ${termSupport ? "" : "single"}">
+              <div class="explain-pane"><span>Full explanation · English</span>${esc(deep)}</div>
+              ${termSupport}
             </div>
           </details>`;
       }).join("");
       const steps = typeof Deep.workedSteps === "function" ? Deep.workedSteps(section) : [
-        "Đọc dữ kiện và xác định yêu cầu.",
-        "Nêu nguyên tắc áp dụng.",
-        "Ghi nhận hoặc tính toán từng bước.",
-        "Kiểm tra tính cân bằng và hợp lý."
+        "Extract the facts and identify the requirement.",
+        "State the accounting rule before calculating or journalizing.",
+        "Apply the rule step by step.",
+        "Check the equation, debit-credit equality, or ending balance."
       ];
       const recalls = typeof Deep.activeRecall === "function" ? Deep.activeRecall(section, chapter) : [];
       return `
         <section class="lesson-section" id="section-${sIndex + 1}">
-          <span class="lesson-index">Chuyên đề ${String(sIndex + 1).padStart(2, "0")}</span>
+          <span class="lesson-index">Lesson ${String(sIndex + 1).padStart(2, "0")}</span>
           <h2>${esc(section.title)}</h2>
           <p class="lesson-lead">${esc(section.lead)}</p>
           <div class="point-stack">${points}</div>
           <div class="lesson-two-col">
             <div class="worked-example">
-              <span class="micro-label">Worked example · ví dụ có quy trình</span>
-              <h3>Từ dữ kiện đến kết luận</h3>
+              <span class="micro-label">Worked example · step by step</span>
+              <h3>From facts to a defensible answer</h3>
               <p>${esc(section.example)}</p>
               <div class="solution-steps">${steps.map((step) => `<div class="solution-step">${esc(step)}</div>`).join("")}</div>
             </div>
             <div class="exam-trap">
-              <span class="micro-label">Exam trap · bẫy thường gặp</span>
-              <h3>Dừng lại trước khi chọn đáp án</h3>
+              <span class="micro-label">Exam trap</span>
+              <h3>Pause before choosing an answer</h3>
               <p>${esc(section.trap)}</p>
             </div>
           </div>
+          ${inlineQuizHtml(quickQuestion, chapter, sIndex)}
           <div class="section-tools">
-            <button class="tool-button note-toggle" type="button" data-note-key="${esc(chapter.id + ":" + sIndex)}">＋ Ghi chú chuyên đề</button>
+            <button class="tool-button note-toggle" type="button" data-note-key="${esc(chapter.id + ":" + sIndex)}">＋ Add lesson note</button>
             <button class="tool-button recall-toggle" type="button" data-recall="${esc(JSON.stringify(recalls))}">↻ Active recall</button>
-            <span class="tool-button">Nguồn: ${esc(typeof Deep.reviewRef === "function" ? Deep.reviewRef(chapter, section) : section.bookRef || chapter.source)}</span>
+            <span class="tool-button">Source: ${esc(typeof Deep.reviewRef === "function" ? Deep.reviewRef(chapter, section) : section.bookRef || chapter.source)}</span>
           </div>
           <div class="inline-slot"></div>
           ${termsHtml(section.terms)}
@@ -354,7 +428,7 @@
       <div class="page-shell"><div class="content-width">
         <div class="chapter-shell">
           <aside class="chapter-aside">
-            <div class="aside-label">Trong chương</div>
+            <div class="aside-label">In this chapter</div>
             <nav>${nav}</nav>
             <div class="chapter-nav-buttons">
               ${prev ? `<a class="button ghost small" href="#chapter/${prev.id}">← Ch ${prev.number}</a>` : "<span></span>"}
@@ -364,35 +438,62 @@
           <article class="chapter-main">
             <header class="chapter-cover">
               <div class="chapter-cover-top">
-                <div><span class="eyebrow">CHƯƠNG ${esc(chapter.number)} · ${esc(chapter.title)}</span><h1>${esc(titleVi(chapter))}</h1><p>${esc(chapter.subtitle)}</p></div>
-                <button class="complete-button ${done ? "done" : ""}" type="button" data-complete="${chapter.id}">${done ? "✓ Đã hoàn thành" : "Đánh dấu hoàn thành"}</button>
+                <div><span class="eyebrow">CHAPTER ${esc(chapter.number)} · COMPLETE LESSON SET</span><h1>${esc(chapter.title)}</h1><p>${esc(chapter.subtitle)}</p></div>
+                <button class="complete-button ${done ? "done" : ""}" type="button" data-complete="${chapter.id}">${done ? "✓ Completed" : "Mark chapter complete"}</button>
               </div>
               <div class="objective-grid">${objectives}</div>
             </header>
-            <div class="logic-banner"><div><strong>Vì sao chương này quan trọng?</strong><p>${esc(why)}</p></div><span class="logic-equation">${chapter.id === "ch1" ? "A = L + E" : "Substance → Analyze → Record"}</span></div>
+            <div class="logic-banner"><div><strong>Why this chapter matters</strong><p>${esc(why)}</p></div><span class="logic-equation">${chapter.id === "ch1" ? "A = L + E" : "Substance → Analyze → Record"}</span></div>
             ${sections}
           </article>
         </div>
       </div></div>`;
 
-    bindChapterEvents(chapter);
+    bindChapterEvents(chapter, anchor);
   }
 
-  function bindChapterEvents(chapter) {
+  function bindChapterEvents(chapter, anchor) {
     document.querySelector("[data-complete]")?.addEventListener("click", (event) => {
       const set = completedSet();
       if (set.has(chapter.id)) set.delete(chapter.id);
       else set.add(chapter.id);
       writeStore("completed", [...set]);
       event.currentTarget.classList.toggle("done", set.has(chapter.id));
-      event.currentTarget.textContent = set.has(chapter.id) ? "✓ Đã hoàn thành" : "Đánh dấu hoàn thành";
+      event.currentTarget.textContent = set.has(chapter.id) ? "✓ Completed" : "Mark chapter complete";
       updateProgressUI();
-      toast(set.has(chapter.id) ? "Đã lưu tiến độ chương." : "Đã bỏ đánh dấu hoàn thành.");
+      toast(set.has(chapter.id) ? "Chapter progress saved." : "Completion mark removed.");
     });
 
     document.querySelectorAll(".term-chip").forEach((button) => button.addEventListener("click", () => {
       navigate("glossary?term=" + encodeURIComponent(button.dataset.term));
     }));
+
+    document.querySelectorAll(".knowledge-check").forEach((quiz) => {
+      quiz.querySelectorAll("[data-inline-answer]").forEach((button) => button.addEventListener("click", () => {
+        if (quiz.dataset.answered === "true") return;
+        const question = (D.questions || []).find((item) => item.id === quiz.dataset.inlineQuiz);
+        if (!question) return;
+        const selected = Number(button.dataset.inlineAnswer);
+        const correct = selected === question.answer;
+        quiz.dataset.answered = "true";
+        quiz.querySelectorAll("[data-inline-answer]").forEach((optionButton) => {
+          const optionIndex = Number(optionButton.dataset.inlineAnswer);
+          optionButton.disabled = true;
+          if (optionIndex === question.answer) optionButton.classList.add("correct");
+          else if (optionIndex === selected) optionButton.classList.add("wrong");
+        });
+        const feedback = quiz.querySelector(".knowledge-feedback");
+        feedback.innerHTML = `
+          <div class="knowledge-result ${correct ? "correct" : "wrong"}"><strong>${correct ? "Correct — the rule has been applied consistently." : "Not correct yet — compare every option below."}</strong><span>${correct ? "✓" : "↻"}</span></div>
+          <div class="knowledge-breakdown">${question.options.map((option, optionIndex) => `<div><b>${String.fromCharCode(65 + optionIndex)}</b><p><strong>${esc(option)}</strong><br>${esc(distractorExplanation(question, optionIndex))}</p></div>`).join("")}</div>`;
+        const attempts = attemptsMap();
+        attempts[question.id] = { selected, correct, at: new Date().toISOString(), source: "inline-check" };
+        writeStore("attempts", attempts);
+        const wrong = new Set(wrongIds());
+        if (correct) wrong.delete(question.id); else wrong.add(question.id);
+        writeStore("wrong", [...wrong]);
+      }));
+    });
 
     document.querySelectorAll(".note-toggle").forEach((button) => button.addEventListener("click", () => {
       const key = button.dataset.noteKey;
@@ -401,8 +502,8 @@
       const existing = notesMap()[key]?.text || "";
       slot.innerHTML = `
         <div class="inline-note">
-          <textarea aria-label="Ghi chú cá nhân" placeholder="Viết lại nguyên tắc bằng lời của bạn…">${esc(existing)}</textarea>
-          <div class="inline-note-actions"><button class="button dark small cancel-note" type="button">Đóng</button><button class="button primary small save-note" type="button">Lưu ghi chú</button></div>
+          <textarea aria-label="Personal note" placeholder="Restate the principle in your own words…">${esc(existing)}</textarea>
+          <div class="inline-note-actions"><button class="button dark small cancel-note" type="button">Close</button><button class="button primary small save-note" type="button">Save note</button></div>
         </div>`;
       slot.querySelector("textarea").focus();
       slot.querySelector(".cancel-note").addEventListener("click", () => slot.innerHTML = "");
@@ -415,7 +516,7 @@
           delete notes[key];
         }
         writeStore("notes", notes);
-        toast(text ? "Đã lưu ghi chú trên thiết bị này." : "Ghi chú trống đã được xóa.");
+        toast(text ? "Note saved on this device." : "The empty note was removed.");
         slot.innerHTML = "";
       });
     }));
@@ -424,9 +525,13 @@
       const slot = button.closest(".lesson-section").querySelector(".inline-slot");
       let prompts = [];
       try { prompts = JSON.parse(button.dataset.recall || "[]"); } catch (_) {}
-      slot.innerHTML = `<div class="inline-note"><strong>Active recall — trả lời mà không nhìn phần trên</strong><ol>${prompts.map((item) => `<li>${esc(item)}</li>`).join("")}</ol><div class="inline-note-actions"><button class="button dark small cancel-note" type="button">Đóng</button></div></div>`;
+      slot.innerHTML = `<div class="inline-note"><strong>Active recall — answer without looking above</strong><ol>${prompts.map((item) => `<li>${esc(item)}</li>`).join("")}</ol><div class="inline-note-actions"><button class="button dark small cancel-note" type="button">Close</button></div></div>`;
       slot.querySelector(".cancel-note").addEventListener("click", () => slot.innerHTML = "");
     }));
+
+    if (anchor && /^section-\d+$/.test(anchor)) {
+      window.setTimeout(() => document.getElementById(anchor)?.scrollIntoView({ behavior: "smooth", block: "start" }), 20);
+    }
   }
 
   function filteredQuestions() {
@@ -435,7 +540,7 @@
     return (D.questions || []).filter((q) => {
       const chapterOk = f.chapter === "all" || q.chapter === f.chapter;
       const difficultyOk = f.difficulty === "all" || q.difficulty === f.difficulty;
-      const queryOk = !query || norm(q.question + " " + q.topic + " " + q.options.join(" ")).includes(query);
+      const queryOk = !query || norm(q.id + " " + q.question + " " + q.topic + " " + q.options.join(" ")).includes(query);
       return chapterOk && difficultyOk && queryOk;
     });
   }
@@ -448,18 +553,18 @@
 
   function renderPractice(chapterId) {
     if (chapterId) appState.practiceFilters.chapter = chapterId;
-    const chapterOptions = (D.chapters || []).map((ch) => `<option value="${ch.id}" ${appState.practiceFilters.chapter === ch.id ? "selected" : ""}>Ch ${ch.number} · ${esc(titleVi(ch))}</option>`).join("");
+    const chapterOptions = (D.chapters || []).map((ch) => `<option value="${ch.id}" ${appState.practiceFilters.chapter === ch.id ? "selected" : ""}>Ch ${ch.number} · ${esc(ch.title)}</option>`).join("");
     main.innerHTML = `
       <div class="page-shell"><div class="content-width">
-        ${routeHead("Question studio", "Luyện tập và hiểu từng lựa chọn.", "802 câu hỏi được gắn chương, chủ đề và độ khó. Sau khi trả lời, bạn nhận lời giải đúng, nguyên nhân phương án sai và đường dẫn ôn lại.", `<a class="button ghost" href="#notes">Xem sổ lỗi sai</a>`)}
+        ${routeHead("Question studio", "Practice with an explanation for every answer.", "All questions are tagged by chapter, topic, and difficulty. Feedback appears immediately and incorrect answers are collected for focused review.", `<a class="button ghost" href="#notes">Open mistake notebook</a>`)}
         <div class="filter-bar">
-          <input id="practice-search" type="search" value="${esc(appState.practiceFilters.query)}" placeholder="Tìm theo nội dung hoặc chủ đề…" />
-          <select id="practice-chapter" aria-label="Lọc theo chương"><option value="all">Tất cả chương</option>${chapterOptions}</select>
-          <select id="practice-difficulty" aria-label="Lọc theo độ khó">
-            <option value="all">Mọi độ khó</option>
-            <option value="easy" ${appState.practiceFilters.difficulty === "easy" ? "selected" : ""}>Dễ</option>
-            <option value="medium" ${appState.practiceFilters.difficulty === "medium" ? "selected" : ""}>Trung bình</option>
-            <option value="hard" ${appState.practiceFilters.difficulty === "hard" ? "selected" : ""}>Khó</option>
+          <input id="practice-search" type="search" value="${esc(appState.practiceFilters.query)}" placeholder="Search by question text or topic…" />
+          <select id="practice-chapter" aria-label="Filter by chapter"><option value="all">All chapters</option>${chapterOptions}</select>
+          <select id="practice-difficulty" aria-label="Filter by difficulty">
+            <option value="all">All difficulty levels</option>
+            <option value="easy" ${appState.practiceFilters.difficulty === "easy" ? "selected" : ""}>Easy</option>
+            <option value="medium" ${appState.practiceFilters.difficulty === "medium" ? "selected" : ""}>Medium</option>
+            <option value="hard" ${appState.practiceFilters.difficulty === "hard" ? "selected" : ""}>Hard</option>
           </select>
         </div>
         <div id="practice-root"></div>
@@ -495,8 +600,8 @@
 
   function breakdownText(question, index) {
     if (index === question.answer) return question.explanation;
-    if (index === appState.selectedAnswer) return "Phương án bạn chọn không đồng thời thỏa bản chất tài khoản, thời điểm ghi nhận hoặc chiều Nợ/Có. Hãy phân loại các yếu tố trước khi nhìn vào tên tài khoản.";
-    return "Không đúng vì lựa chọn này không phù hợp đầy đủ với nguyên tắc được nêu trong lời giải. Kiểm tra lại sự kiện kinh tế và tác động kép.";
+    if (index === appState.selectedAnswer) return "Your choice does not satisfy the account classification, recognition timing, or debit/credit direction. Classify the affected elements before relying on account names.";
+    return "This option does not fully satisfy the accounting rule in the explanation. Recheck the economic event, recognition point, and dual effect.";
   }
 
   function viQuestionExplanation(question) {
@@ -518,7 +623,7 @@
     if (!root) return;
     const questions = filteredQuestions();
     if (!questions.length) {
-      root.innerHTML = `<div class="empty-state"><strong>Không tìm thấy câu phù hợp.</strong><span>Thử đổi từ khóa, chương hoặc độ khó.</span></div>`;
+      root.innerHTML = `<div class="empty-state"><strong>No matching question found.</strong><span>Try another keyword, chapter, or difficulty level.</span></div>`;
       return;
     }
     if (appState.practiceIndex >= questions.length) appState.practiceIndex = questions.length - 1;
@@ -535,13 +640,12 @@
     }).join("");
     const feedback = answered ? `
       <section class="feedback">
-        <div class="feedback-head ${isCorrect ? "" : "wrong"}"><strong>${isCorrect ? "Chính xác — bạn đã nhận diện đúng bản chất." : "Chưa chính xác — cùng truy nguyên điểm sai."}</strong><span>${isCorrect ? "✓" : "↻"}</span></div>
+        <div class="feedback-head ${isCorrect ? "" : "wrong"}"><strong>${isCorrect ? "Correct — the accounting logic is consistent." : "Not yet — trace the exact point of failure."}</strong><span>${isCorrect ? "✓" : "↻"}</span></div>
         <div class="feedback-body">
-          <h3>Vì sao đáp án ${String.fromCharCode(65 + q.answer)} đúng?</h3>
+          <h3>Why is option ${String.fromCharCode(65 + q.answer)} correct?</h3>
           <p>${esc(q.explanation)}</p>
-          <div class="explain-pane vi"><span>Diễn giải tiếng Việt</span>${esc(viQuestionExplanation(q))}</div>
           <div class="option-breakdown">${q.options.map((option, i) => `<div class="breakdown-row"><b>${String.fromCharCode(65 + i)}</b><span><strong>${esc(option)}</strong><br>${esc(breakdownText(q, i))}</span></div>`).join("")}</div>
-          <div class="review-path">Ôn lại: <a class="text-link" href="#chapter/${esc(q.chapter)}">${esc(titleVi(chapter))}</a> · Nguồn câu hỏi: ${esc(q.source || "Source pack")}</div>
+          <div class="review-path">Review: <a class="text-link" href="#chapter/${esc(q.chapter)}">${esc(chapter?.title || "Chapter")}</a> · Question source: ${esc(q.source || "Source pack")}</div>
         </div>
       </section>` : "";
     const stats = practiceStats();
@@ -549,18 +653,18 @@
     root.innerHTML = `
       <div class="practice-layout">
         <section class="question-card">
-          <div class="question-top"><span class="question-count">Câu ${appState.practiceIndex + 1} / ${questions.length}</span><div class="question-tags"><span class="tag accent">${esc(q.topic)}</span><span class="tag">${esc(q.difficulty || "medium")}</span><span class="tag">Ch ${esc(chapter?.number || "")}</span></div></div>
+          <div class="question-top"><span class="question-count">Question ${appState.practiceIndex + 1} / ${questions.length}</span><div class="question-tags"><span class="tag accent">${esc(q.topic)}</span><span class="tag">${esc(q.difficulty || "medium")}</span><span class="tag">Ch ${esc(chapter?.number || "")}</span></div></div>
           <h2>${esc(q.question)}</h2>
           <div class="options">${options}</div>
           ${feedback}
           <div class="question-actions">
-            <button class="button ghost small" type="button" id="prev-question" ${appState.practiceIndex === 0 ? "disabled" : ""}>← Câu trước</button>
-            <div><button class="button ghost small" type="button" id="shuffle-question">Câu ngẫu nhiên</button><button class="button primary small" type="button" id="next-question">Câu tiếp →</button></div>
+            <button class="button ghost small" type="button" id="prev-question" ${appState.practiceIndex === 0 ? "disabled" : ""}>← Previous</button>
+            <div><button class="button ghost small" type="button" id="shuffle-question">Random question</button><button class="button primary small" type="button" id="next-question">Next →</button></div>
           </div>
         </section>
         <aside class="practice-aside">
-          <div class="aside-card"><h3>Tiến độ luyện tập</h3><div class="score-grid"><div class="score-box"><b>${stats.attempted}</b><span>đã làm</span></div><div class="score-box"><b>${stats.rate}%</b><span>đúng</span></div></div></div>
-          <div class="aside-card"><h3>Câu cần ôn lại</h3><div class="mistake-list-mini">${wrongQuestions.length ? wrongQuestions.map((item) => `<button type="button" data-question-id="${esc(item.id)}">${esc(item.id)} · ${esc(item.topic)}</button>`).join("") : "<span>Chưa có câu sai nào được lưu.</span>"}</div></div>
+          <div class="aside-card"><h3>Practice progress</h3><div class="score-grid"><div class="score-box"><b>${stats.attempted}</b><span>attempted</span></div><div class="score-box"><b>${stats.rate}%</b><span>correct</span></div></div></div>
+          <div class="aside-card"><h3>Review queue</h3><div class="mistake-list-mini">${wrongQuestions.length ? wrongQuestions.map((item) => `<button type="button" data-question-id="${esc(item.id)}">${esc(item.id)} · ${esc(item.topic)}</button>`).join("") : "<span>No incorrect answers saved yet.</span>"}</div></div>
         </aside>
       </div>`;
 
@@ -620,17 +724,17 @@
         <div class="term-card-top"><div><h3>${esc(item.term)}</h3><div class="term-vi">${esc(item.vi)}</div></div><span class="term-chapter">${esc(item.chapter)}</span></div>
         <div class="definition-block">
           <div><span>Definition · EN</span>${esc(item.definition)}</div>
-          <div><span>Giải thích chuẩn · VI</span>${esc(Extra.glossaryVi?.[item.term.toLowerCase()] || viExplanation(item.definition))}</div>
+          <div><span>Vietnamese key-term explanation</span>${esc(Extra.glossaryVi?.[item.term.toLowerCase()] || viExplanation(item.definition))}</div>
         </div>
       </article>`).join("");
     main.innerHTML = `
       <div class="page-shell"><div class="content-width">
-        ${routeHead("Bilingual glossary", "Key terms Việt–Anh, rõ đến bản chất.", "Không chỉ dịch từ: mỗi thuật ngữ có định nghĩa tiếng Anh, tên gọi tiếng Việt và diễn giải để tránh nhầm lẫn khi làm bài.")}
+        ${routeHead("Bilingual glossary", "English teaching, precise Vietnamese terminology.", "Each entry keeps the English accounting term and definition, then provides an accurate Vietnamese equivalent and clarification. Vietnamese is used here as terminology support, not as the teaching language.")}
         <div class="glossary-toolbar">
-          <input class="glossary-search" id="glossary-search" type="search" value="${esc(appState.glossaryQuery)}" placeholder="Tìm asset, retained earnings, doanh thu…" />
+          <input class="glossary-search" id="glossary-search" type="search" value="${esc(appState.glossaryQuery)}" placeholder="Search asset, retained earnings, doanh thu…" />
           <div class="alphabet-filter"><button class="${appState.glossaryLetter === "ALL" ? "active" : ""}" type="button" data-letter="ALL">ALL</button>${letters.map((letter) => `<button class="${appState.glossaryLetter === letter ? "active" : ""}" type="button" data-letter="${letter}">${letter}</button>`).join("")}</div>
         </div>
-        <div class="glossary-grid">${cards || `<div class="empty-state"><strong>Không có thuật ngữ phù hợp.</strong><span>Thử từ khóa khác hoặc chọn ALL.</span></div>`}</div>
+        <div class="glossary-grid">${cards || `<div class="empty-state"><strong>No matching term found.</strong><span>Try another keyword or select ALL.</span></div>`}</div>
       </div></div>`;
     let timer;
     document.getElementById("glossary-search")?.addEventListener("input", (event) => {
@@ -647,23 +751,25 @@
   }
 
   function renderExercises(chapterId) {
-    const chapter = getChapter(chapterId || Extra.exercises?.[0]?.chapter || "ch1");
-    const exercise = (Extra.exercises || []).find((item) => item.chapter === chapter.id);
+    const exerciseSet = Extra.englishExercises || Extra.exercises || [];
+    const chapter = getChapter(chapterId || exerciseSet[0]?.chapter || "ch1");
+    if (!chapter) return renderNotFound();
+    const exercise = exerciseSet.find((item) => item.chapter === chapter.id);
     const pack = (D.sourcePracticePacks || []).find((item) => String(item.chapter || "").includes(String(Number(chapter.number)))) || D.sourcePracticePacks?.[0];
     const tabs = (D.chapters || []).map((ch) => `<button class="${ch.id === chapter.id ? "active" : ""}" type="button" data-exercise-chapter="${ch.id}">Ch ${ch.number}</button>`).join("");
     main.innerHTML = `
       <div class="page-shell"><div class="content-width">
-        ${routeHead("Chapter exercises", "Bài tập rõ theo từng chương.", "Mỗi bài nêu yêu cầu, dữ kiện, quy trình giải và điểm kiểm tra cuối. Lời giải được mở khi bạn cần đối chiếu, giúp tự làm trước khi xem đáp án.")}
-        <div class="exercise-tabs" aria-label="Chọn chương">${tabs}</div>
+        ${routeHead("Chapter exercises", "A fully worked problem for every chapter.", "Each problem states the facts and requirement clearly. Attempt it first, then open the solution to compare the rule, calculation, journal entry, and final check step by step.")}
+        <div class="exercise-tabs" aria-label="Choose a chapter">${tabs}</div>
         <div class="exercise-summary">
-          <div class="exercise-brief"><span class="eyebrow">CHƯƠNG ${esc(chapter.number)}</span><h2>${esc(titleVi(chapter))}</h2><p>${esc(chapter.objectives?.[0] || chapter.subtitle)}</p></div>
-          <aside class="exercise-map"><h3>Quy trình đề nghị</h3><ol><li>Tóm tắt sự kiện kinh tế.</li><li>Nêu nguyên tắc và tài khoản.</li><li>Tính hoặc ghi từng bước.</li><li>Đối chiếu tổng và kết luận.</li></ol>${pack ? `<p><small>Source pack: ${esc(pack.source)} · ${esc(pack.note)}</small></p>` : ""}</aside>
+          <div class="exercise-brief"><span class="eyebrow">CHAPTER ${esc(chapter.number)}</span><h2>${esc(chapter.title)}</h2><p>${esc(chapter.objectives?.[0] || chapter.subtitle)}</p></div>
+          <aside class="exercise-map"><h3>Recommended process</h3><ol><li>Extract the economic facts.</li><li>State the rule and accounts.</li><li>Calculate or journalize step by step.</li><li>Reconcile totals and conclude.</li></ol>${pack ? `<p><small>Source pack: ${esc(pack.source)} · ${esc(pack.note)}</small></p>` : ""}</aside>
         </div>
         ${exercise ? `
           <article class="exercise-card">
-            <header><div><span class="tag accent">Ch ${esc(chapter.number)}</span><span class="tag">${esc(exercise.level || "Vận dụng")}</span></div><h3>${esc(exercise.title)}</h3><p class="prompt">${esc(exercise.prompt)}</p></header>
-            <details><summary><span>Mở lời giải chi tiết</span><span aria-hidden="true">＋</span></summary><div class="exercise-solution">${(exercise.solution || []).map((step) => `<div>${esc(step)}</div>`).join("")}</div></details>
-          </article>` : `<div class="empty-state"><strong>Bài tập đang được cập nhật.</strong><span>Chọn chương khác để tiếp tục.</span></div>`}
+            <header><div><span class="tag accent">Ch ${esc(chapter.number)}</span><span class="tag">${esc(exercise.level || "Applied")}</span></div><h3>${esc(exercise.title)}</h3><p class="prompt">${esc(exercise.prompt)}</p></header>
+            <details><summary><span>Open the detailed solution</span><span aria-hidden="true">＋</span></summary><div class="exercise-solution">${(exercise.solution || []).map((step) => `<div>${esc(step)}</div>`).join("")}</div></details>
+          </article>` : `<div class="empty-state"><strong>This worked problem is being updated.</strong><span>Select another chapter to continue.</span></div>`}
       </div></div>`;
     document.querySelectorAll("[data-exercise-chapter]").forEach((button) => button.addEventListener("click", () => navigate("exercises/" + button.dataset.exerciseChapter)));
   }
@@ -674,26 +780,26 @@
       const chapter = getChapter(note.chapter);
       return `
         <article class="note-card">
-          <div class="note-card-top"><div><h3>${esc(note.title)}</h3><small>Ch ${esc(chapter?.number || "")} · cập nhật ${esc(new Date(note.updated).toLocaleDateString("vi-VN"))}</small></div></div>
+          <div class="note-card-top"><div><h3>${esc(note.title)}</h3><small>Ch ${esc(chapter?.number || "")} · updated ${esc(new Date(note.updated).toLocaleDateString("en-GB"))}</small></div></div>
           <p>${esc(note.text)}</p>
-          <div class="note-card-actions"><button type="button" data-open-note="${esc(key)}">Mở chuyên đề</button><button type="button" data-delete-note="${esc(key)}">Xóa</button></div>
+          <div class="note-card-actions"><button type="button" data-open-note="${esc(key)}">Open lesson</button><button type="button" data-delete-note="${esc(key)}">Delete</button></div>
         </article>`;
     }).join("");
     const wrong = wrongIds().map((id) => (D.questions || []).find((item) => item.id === id)).filter(Boolean);
     const wrongCards = wrong.slice(-12).reverse().map((q) => `
-      <article class="note-card"><div class="note-card-top"><div><h3>${esc(q.topic)}</h3><small>${esc(q.id)} · Ch ${esc(getChapter(q.chapter)?.number || "")}</small></div></div><p>${esc(q.question)}</p><div class="note-card-actions"><button type="button" data-review-question="${esc(q.id)}">Làm lại câu này</button></div></article>`).join("");
+      <article class="note-card"><div class="note-card-top"><div><h3>${esc(q.topic)}</h3><small>${esc(q.id)} · Ch ${esc(getChapter(q.chapter)?.number || "")}</small></div></div><p>${esc(q.question)}</p><div class="note-card-actions"><button type="button" data-review-question="${esc(q.id)}">Attempt again</button></div></article>`).join("");
     main.innerHTML = `
       <div class="page-shell"><div class="content-width">
-        ${routeHead("Personal notebook", "Ghi chú và sổ lỗi sai.", "Mọi dữ liệu được lưu cục bộ trong trình duyệt của bạn. Ghi chú bám đúng chuyên đề; câu trả lời sai được gom lại để luyện có chủ đích.")}
-        <section class="section-block"><div class="section-heading"><div><span class="eyebrow">My notes</span><h2>Ghi chú chuyên đề</h2></div></div><div class="notes-grid">${noteCards || `<div class="empty-state"><strong>Chưa có ghi chú.</strong><span>Vào một chương và chọn “Ghi chú chuyên đề”.</span></div>`}</div></section>
-        <section class="section-block"><div class="section-heading"><div><span class="eyebrow">Mistake notebook</span><h2>Câu cần làm lại</h2></div></div><div class="notes-grid">${wrongCards || `<div class="empty-state"><strong>Sổ lỗi sai đang trống.</strong><span>Làm câu hỏi để hệ thống tự tạo danh sách ôn tập.</span></div>`}</div></section>
+        ${routeHead("Personal notebook", "Lesson notes and a mistake notebook.", "All data is stored locally in your browser. Notes stay attached to the relevant lesson, while incorrect answers from both inline checks and Practice are collected for deliberate review.")}
+        <section class="section-block"><div class="section-heading"><div><span class="eyebrow">My notes</span><h2>Lesson notes</h2></div></div><div class="notes-grid">${noteCards || `<div class="empty-state"><strong>No notes yet.</strong><span>Open any chapter and select “Add lesson note”.</span></div>`}</div></section>
+        <section class="section-block"><div class="section-heading"><div><span class="eyebrow">Mistake notebook</span><h2>Questions to attempt again</h2></div></div><div class="notes-grid">${wrongCards || `<div class="empty-state"><strong>Your mistake notebook is empty.</strong><span>Answer a knowledge check or Practice question to build a review queue.</span></div>`}</div></section>
       </div></div>`;
     document.querySelectorAll("[data-open-note]").forEach((button) => button.addEventListener("click", () => {
       const note = notesMap()[button.dataset.openNote];
       if (note) navigate("chapter/" + note.chapter);
     }));
     document.querySelectorAll("[data-delete-note]").forEach((button) => button.addEventListener("click", () => {
-      if (!window.confirm("Xóa ghi chú này? Thao tác không thể hoàn tác.")) return;
+      if (!window.confirm("Delete this note? This action cannot be undone.")) return;
       const notes = notesMap();
       delete notes[button.dataset.deleteNote];
       writeStore("notes", notes);
@@ -714,12 +820,12 @@
     const attempts = practiceStats();
     main.innerHTML = `
       <div class="page-shell"><div class="content-width">
-        ${routeHead("Learning progress", "Tiến độ là tín hiệu, không phải áp lực.", "Đánh dấu chương đã hiểu, theo dõi câu đã làm và quay lại đúng nơi còn yếu. Dữ liệu không rời khỏi thiết bị.")}
+        ${routeHead("Learning progress", "Progress is a signal, not a gate.", "Every chapter remains open. Completion marks, question attempts, and the mistake notebook simply help you identify where to review next.")}
         <div class="progress-layout">
-          <section class="progress-hero-card"><div><div class="big-ring" style="--progress:${percent * 3.6}deg"><div><b>${percent}%</b></div></div><h2>${completed.size}/${total} chương</h2><p>${attempts.attempted} câu đã làm · tỷ lệ đúng ${attempts.rate}%</p></div></section>
+          <section class="progress-hero-card"><div><div class="big-ring" style="--progress:${percent * 3.6}deg"><div><b>${percent}%</b></div></div><h2>${completed.size}/${total} chapters</h2><p>${attempts.attempted} questions attempted · ${attempts.rate}% correct</p></div></section>
           <section class="progress-list">${(D.chapters || []).map((ch) => {
             const done = completed.has(ch.id);
-            return `<a class="progress-row" href="#chapter/${ch.id}"><b>${ch.number}</b><div><strong>${esc(titleVi(ch))}</strong><span>${esc(ch.sections?.length || 0)} chuyên đề</span></div><em>${done ? "✓ Hoàn thành" : "Mở chương →"}</em></a>`;
+            return `<a class="progress-row" href="#chapter/${ch.id}"><b>${ch.number}</b><div><strong>${esc(ch.title)}</strong><span>${esc(ch.sections?.length || 0)} full lessons</span></div><em>${done ? "✓ Completed" : "Open chapter →"}</em></a>`;
           }).join("")}</section>
         </div>
       </div></div>`;
@@ -728,34 +834,145 @@
   function renderSources() {
     main.innerHTML = `
       <div class="page-shell"><div class="content-width">
-        ${routeHead("Source-grounded", "Học liệu có nguồn và có phương pháp.", "Nội dung được đối chiếu giữa giáo trình IFRS, mind map môn học, slide chương, ngân hàng câu hỏi và workbook thực hành. Website chủ động sửa các lỗi dịch phổ biến thay vì sao chép nguyên văn.")}
+        ${routeHead("Source-grounded", "A course built from the textbook and your teacher’s learning map.", "Theory is cross-checked against Financial Accounting IFRS 5e, the teacher mind map, chapter slides, verified question banks, and the supplied practice workbooks.")}
         <div class="source-grid">${(D.sources || []).map((source) => `
           <article class="source-card"><span class="micro-label">${esc(source.type)}</span><h3>${esc(source.title)}</h3><p><strong>${esc(source.author || "")}</strong></p><p>${esc(source.note)}</p></article>`).join("")}</div>
         <section class="section-block trust-strip">
-          <div class="trust-copy"><span class="eyebrow">Editorial method</span><h2>Bản chất trước thuật ngữ, thuật ngữ trước bút toán.</h2><p>Mọi lời giải theo bốn bước: nhận diện sự kiện, phân loại yếu tố, áp dụng quy tắc ghi nhận, rồi kiểm tra phương trình hoặc Nợ = Có.</p></div>
-          <div class="correction-card"><h3>Nguyên tắc sử dụng học liệu</h3><div class="correction-list"><div class="correction-row"><del>Sao chép đáp án</del><div><strong>Giải thích lại có cấu trúc</strong>Dữ kiện và câu hỏi được dùng để kiểm tra kiến thức; lời giải được biên tập theo logic học tập.</div></div><div class="correction-row"><del>Dịch từng chữ</del><div><strong>Dịch theo nghĩa kế toán</strong>Key terms giữ tên tiếng Anh để đối chiếu, kèm tên và định nghĩa tiếng Việt chuẩn.</div></div></div></div>
+          <div class="trust-copy"><span class="eyebrow">Editorial method</span><h2>Substance first, terminology second, journal entry third.</h2><p>Every solution follows four checks: identify the event, classify the elements, apply the recognition rule, then reconcile the equation or debit-credit totals.</p></div>
+          <div class="correction-card"><h3>How the sources are used</h3><div class="correction-list"><div class="correction-row"><del>Copy an answer</del><div><strong>Rebuild the reasoning</strong>Questions test the source material; explanations are structured around economic substance and exam reasoning.</div></div><div class="correction-row"><del>Translate word by word</del><div><strong>Translate accounting meaning</strong>Lessons remain in English; key terms retain their English form with precise Vietnamese support.</div></div></div></div>
         </section>
       </div></div>`;
   }
 
+  function renderTools() {
+    const tools = [
+      ["mindmap", "Teacher Mind Map", "See how the teacher connects organization forms, assumptions, elements, statements, recording flow, and merchandising."],
+      ["lab", "Accounting Lab", "Practice the accounting equation, debit-credit balance, journals, trial balances, adjustments, and cash-flow structure."],
+      ["flashcards", "Flashcards", "Review English accounting terms with precise Vietnamese translations and definitions."],
+      ["formulae", "Formula Sheet", "Keep equations, ratios, inventory measures, depreciation, interest, and cash-flow checks in one clean reference."],
+      ["exam", "Exam Mode", "Take a 20-question mixed mock test and receive a complete answer review after submission."],
+      ["sources", "Sources", "Trace the textbook, teacher mind map, slides, question banks, workbooks, and solved source packs behind the course."]
+    ];
+    main.innerHTML = `<div class="page-shell"><div class="content-width">
+      ${routeHead("Study tools", "The original learning toolkit, preserved.", "The cinematic redesign changes presentation, not the core study structure. Mind map, lab, flashcards, formula sheet, exam mode, notes, mistake review, and sources remain available.")}
+      <div class="tool-hub-grid">${tools.map(([route, title, copy], index) => `<a class="tool-hub-card" href="#${route}"><b>${String(index + 1).padStart(2, "0")}</b><div><h2>${esc(title)}</h2><p>${esc(copy)}</p><span>Open tool →</span></div></a>`).join("")}</div>
+    </div></div>`;
+  }
+
+  function mindmapBranch(node, depth = 0) {
+    const children = node.children || [];
+    if (!children.length) return `<li><span>${esc(node.text)}</span></li>`;
+    return `<li><details ${depth < 1 ? "open" : ""}><summary>${esc(node.text)}</summary><ul>${children.map((child) => mindmapBranch(child, depth + 1)).join("")}</ul></details></li>`;
+  }
+
+  function renderMindmap() {
+    const map = window.ACCOUNTING_MINDMAP;
+    main.innerHTML = `<div class="page-shell"><div class="content-width">
+      ${routeHead("Teacher mind map", "The conceptual map behind the course.", "This view preserves the teacher's hierarchy. Open each branch to trace how a definition, statement, or transaction rule connects to the next stage of accounting.", `<a class="button ghost" href="#chapter/ch1">Open Chapter 01 theory</a>`)}
+      ${map ? `<div class="mindmap-board"><div class="mindmap-root"><span>${esc(map.title)}</span><small>${esc(map.source)}</small></div><ul>${map.branches.map((branch) => mindmapBranch(branch)).join("")}</ul></div>` : `<div class="empty-state"><strong>Mind map data is unavailable.</strong><span>Use the chapter route while the source is reloaded.</span></div>`}
+    </div></div>`;
+  }
+
+  function renderFormulae() {
+    main.innerHTML = `<div class="page-shell"><div class="content-width">
+      ${routeHead("Formula sheet", "Readable formulas with meaning and checks.", "Each card shows the English formula first. Vietnamese appears only as key-term support so the course remains English-taught.")}
+      <div class="formula-grid">${(D.formulae || []).map((item, index) => `<article class="formula-card"><span>${String(index + 1).padStart(2, "0")}</span><h2>${esc(item.name)}</h2><div class="formula-display">${esc(item.formula)}</div><p><b>VI key-term support:</b> ${esc(item.vi || "—")}</p></article>`).join("")}</div>
+    </div></div>`;
+  }
+
+  function renderFlashcards() {
+    const cards = D.glossary || [];
+    if (!cards.length) return renderNotFound();
+    const card = cards[appState.flashcardIndex % cards.length];
+    main.innerHTML = `<div class="page-shell"><div class="content-width">
+      ${routeHead("Flashcards", "Recall the English term before revealing support.", "Say the definition aloud first. Then reveal the English definition, Vietnamese equivalent, and precise Vietnamese clarification.")}
+      <section class="flashcard-stage">
+        <div class="flashcard-count">Card ${appState.flashcardIndex + 1} / ${cards.length} · ${esc(card.chapter)}</div>
+        <button class="flashcard ${appState.flashcardRevealed ? "revealed" : ""}" id="flashcard-reveal" type="button">
+          <span class="eyebrow">Accounting key term</span><h2>${esc(card.term)}</h2>
+          ${appState.flashcardRevealed ? `<div class="flashcard-answer"><strong>${esc(card.definition)}</strong><p>${esc(card.vi)}</p><small>${esc(Extra.glossaryVi?.[card.term.toLowerCase()] || card.vi)}</small></div>` : `<p>Define this term in English, then click to reveal.</p>`}
+        </button>
+        <div class="flashcard-actions"><button class="button ghost" id="flashcard-prev" type="button">← Previous</button><button class="button primary" id="flashcard-next" type="button">Next card →</button></div>
+      </section>
+    </div></div>`;
+    document.getElementById("flashcard-reveal")?.addEventListener("click", () => { appState.flashcardRevealed = !appState.flashcardRevealed; renderFlashcards(); });
+    document.getElementById("flashcard-prev")?.addEventListener("click", () => { appState.flashcardIndex = (appState.flashcardIndex - 1 + cards.length) % cards.length; appState.flashcardRevealed = false; renderFlashcards(); });
+    document.getElementById("flashcard-next")?.addEventListener("click", () => { appState.flashcardIndex = (appState.flashcardIndex + 1) % cards.length; appState.flashcardRevealed = false; renderFlashcards(); });
+  }
+
+  function labWorkspace(template) {
+    const balanceLab = ["journal", "ledger", "trial", "worksheet", "cashflow"].includes(template.id);
+    if (template.id === "equation") return `<div class="lab-panel"><h2>Equation balance checker</h2><p>Enter the cumulative change in each element. The accounting equation is balanced when Assets = Liabilities + Equity.</p><div class="lab-inputs"><label>Δ Assets<input id="lab-assets" type="number" value="0"></label><label>Δ Liabilities<input id="lab-liabilities" type="number" value="0"></label><label>Δ Equity<input id="lab-equity" type="number" value="0"></label></div><button class="button primary" id="lab-check" type="button">Check equation</button><div class="lab-result" id="lab-result" aria-live="polite"></div></div>`;
+    if (balanceLab) return `<div class="lab-panel"><h2>${esc(template.title)} balance checker</h2><p>Enter the total debit and credit columns after completing your working table.</p><div class="lab-inputs two"><label>Total debits<input id="lab-debits" type="number" value="0"></label><label>Total credits<input id="lab-credits" type="number" value="0"></label></div><button class="button primary" id="lab-check" type="button">Check debit-credit equality</button><div class="lab-result" id="lab-result" aria-live="polite"></div></div>`;
+    return `<div class="lab-panel"><h2>${esc(template.title)}</h2><p>${esc(template.desc)}</p><label class="lab-working">Working area<textarea placeholder="Enter accounts, calculations, and reconciliation notes here…"></textarea></label><div class="lab-checklist"><span>1 · Identify the event</span><span>2 · Classify accounts</span><span>3 · Apply the rule</span><span>4 · Reconcile totals</span></div></div>`;
+  }
+
+  function renderLab(templateId) {
+    const templates = D.labTemplates || [];
+    const selected = templates.find((item) => item.id === templateId) || templates[0];
+    if (!selected) return renderNotFound();
+    main.innerHTML = `<div class="page-shell"><div class="content-width">
+      ${routeHead("Accounting lab", "Build the working before checking the answer.", "The lab preserves the original practice templates and gives you a clean space to test equation balance, debit-credit equality, and reconciliation logic.")}
+      <div class="lab-layout"><aside class="lab-menu">${templates.map((item) => `<a class="${item.id === selected.id ? "active" : ""}" href="#lab/${item.id}"><strong>${esc(item.title)}</strong><small>${esc(item.vi)}</small></a>`).join("")}</aside><section><div class="lab-source">${esc(selected.desc)}<br><small>Source: ${esc(selected.source)}</small></div>${labWorkspace(selected)}</section></div>
+    </div></div>`;
+    document.getElementById("lab-check")?.addEventListener("click", () => {
+      const result = document.getElementById("lab-result");
+      if (selected.id === "equation") {
+        const assets = Number(document.getElementById("lab-assets").value || 0);
+        const liabilities = Number(document.getElementById("lab-liabilities").value || 0);
+        const equity = Number(document.getElementById("lab-equity").value || 0);
+        const balanced = Math.abs(assets - liabilities - equity) < 0.001;
+        result.className = `lab-result ${balanced ? "correct" : "wrong"}`;
+        result.textContent = balanced ? `Balanced: ${assets} = ${liabilities} + ${equity}.` : `Not balanced: Assets differ from Liabilities + Equity by ${(assets - liabilities - equity).toFixed(2)}.`;
+      } else {
+        const debits = Number(document.getElementById("lab-debits").value || 0);
+        const credits = Number(document.getElementById("lab-credits").value || 0);
+        const balanced = Math.abs(debits - credits) < 0.001;
+        result.className = `lab-result ${balanced ? "correct" : "wrong"}`;
+        result.textContent = balanced ? `Balanced: total debits = total credits = ${debits}.` : `Difference: ${(debits - credits).toFixed(2)}. Recheck posting, amount, and debit-credit direction.`;
+      }
+    });
+  }
+
+  function renderExam() {
+    if (!appState.examQuestions.length) {
+      main.innerHTML = `<div class="page-shell"><div class="content-width">${routeHead("Exam mode", "A 20-question mixed mock exam.", "Questions are drawn from all chapters. Submit once to receive your score and a complete explanation for every option.")}<div class="exam-start"><h2>Ready to test the full course?</h2><p>All chapters remain open before and after the exam. This mode measures recall; it does not lock content.</p><button class="button primary" id="start-exam" type="button">Start 20-question exam</button></div></div></div>`;
+      document.getElementById("start-exam")?.addEventListener("click", () => {
+        appState.examQuestions = [...(D.questions || [])].sort(() => Math.random() - .5).slice(0, 20);
+        appState.examAnswers = {};
+        appState.examSubmitted = false;
+        renderExam();
+      });
+      return;
+    }
+    const score = appState.examQuestions.filter((q) => Number(appState.examAnswers[q.id]) === q.answer).length;
+    main.innerHTML = `<div class="page-shell"><div class="content-width">${routeHead("Exam mode", appState.examSubmitted ? `Score: ${score} / ${appState.examQuestions.length}` : "20-question mock in progress.", appState.examSubmitted ? "Review every answer below, then return to the relevant chapter or restart the exam." : "Choose one answer per question. Explanations appear only after submission.")}
+      <div class="exam-list">${appState.examQuestions.map((q, qIndex) => `<article class="exam-question"><span>Question ${qIndex + 1} · ${esc(q.topic)}</span><h2>${esc(q.question)}</h2><div>${q.options.map((option, optionIndex) => `<label class="${appState.examSubmitted ? (optionIndex === q.answer ? "correct" : Number(appState.examAnswers[q.id]) === optionIndex ? "wrong" : "") : ""}"><input type="radio" name="exam-${esc(q.id)}" value="${optionIndex}" ${Number(appState.examAnswers[q.id]) === optionIndex ? "checked" : ""} ${appState.examSubmitted ? "disabled" : ""}><b>${String.fromCharCode(65 + optionIndex)}</b><span>${esc(option)}</span></label>`).join("")}</div>${appState.examSubmitted ? `<details><summary>Review all option explanations</summary><div class="knowledge-breakdown">${q.options.map((option, optionIndex) => `<div><b>${String.fromCharCode(65 + optionIndex)}</b><p><strong>${esc(option)}</strong><br>${esc(distractorExplanation(q, optionIndex))}</p></div>`).join("")}</div></details>` : ""}</article>`).join("")}</div>
+      <div class="exam-actions">${appState.examSubmitted ? `<button class="button primary" id="restart-exam" type="button">Start a new exam</button>` : `<button class="button primary" id="submit-exam" type="button">Submit exam</button>`}</div>
+    </div></div>`;
+    document.querySelectorAll('.exam-question input[type="radio"]').forEach((input) => input.addEventListener("change", () => { appState.examAnswers[input.name.replace("exam-", "")] = Number(input.value); }));
+    document.getElementById("submit-exam")?.addEventListener("click", () => { appState.examSubmitted = true; renderExam(); });
+    document.getElementById("restart-exam")?.addEventListener("click", () => { appState.examQuestions = []; appState.examAnswers = {}; appState.examSubmitted = false; renderExam(); });
+  }
+
   function renderNotFound() {
-    main.innerHTML = `<div class="page-shell"><div class="content-width"><div class="empty-state"><strong>Không tìm thấy trang.</strong><span><a class="text-link" href="#home">Trở về trang chủ</a></span></div></div></div>`;
+    main.innerHTML = `<div class="page-shell"><div class="content-width"><div class="empty-state"><strong>Page not found.</strong><span><a class="text-link" href="#learn">Open all 15 chapters</a></span></div></div></div>`;
   }
 
   function renderSearchResults(query) {
     const value = norm(query);
     if (!value) {
-      searchResults.innerHTML = `<div class="empty-state"><strong>Tìm xuyên suốt 15 chương.</strong><span>Gõ ví dụ: adjusting entry, hàng tồn kho, retained earnings.</span></div>`;
+      searchResults.innerHTML = `<div class="empty-state"><strong>Search all 15 chapters.</strong><span>Try adjusting entry, inventory, or retained earnings.</span></div>`;
       return;
     }
     const chapterHits = (D.chapters || []).filter((ch) => norm(ch.title + " " + titleVi(ch) + " " + ch.subtitle + " " + ch.sections.map((s) => s.title).join(" ")).includes(value)).slice(0, 6);
     const termHits = (D.glossary || []).filter((item) => norm(item.term + " " + item.vi + " " + item.definition + " " + (Extra.glossaryVi?.[item.term.toLowerCase()] || "")).includes(value)).slice(0, 8);
     const hits = [
-      ...chapterHits.map((ch) => ({ icon: ch.number, title: titleVi(ch), meta: ch.title, route: "chapter/" + ch.id, kind: "Chương" })),
-      ...termHits.map((item) => ({ icon: "Aa", title: item.term, meta: item.vi, route: "glossary?term=" + encodeURIComponent(item.term), kind: "Thuật ngữ" }))
+      ...chapterHits.map((ch) => ({ icon: ch.number, title: ch.title, meta: `${ch.sections.length} full lessons`, route: "chapter/" + ch.id, kind: "Chapter" })),
+      ...termHits.map((item) => ({ icon: "Aa", title: item.term, meta: item.vi, route: "glossary?term=" + encodeURIComponent(item.term), kind: "Key term" }))
     ];
     searchResults.innerHTML = hits.length ? hits.map((hit) => `
-      <button class="search-result" type="button" data-search-route="${esc(hit.route)}"><b>${esc(hit.icon)}</b><span><strong>${esc(hit.title)}</strong><span>${esc(hit.meta)}</span></span><em>${esc(hit.kind)}</em></button>`).join("") : `<div class="empty-state"><strong>Chưa tìm thấy kết quả.</strong><span>Thử một thuật ngữ ngắn hơn.</span></div>`;
+      <button class="search-result" type="button" data-search-route="${esc(hit.route)}"><b>${esc(hit.icon)}</b><span><strong>${esc(hit.title)}</strong><span>${esc(hit.meta)}</span></span><em>${esc(hit.kind)}</em></button>`).join("") : `<div class="empty-state"><strong>No search result found.</strong><span>Try a shorter accounting term.</span></div>`;
     searchResults.querySelectorAll("[data-search-route]").forEach((button) => button.addEventListener("click", () => {
       searchDialog.close();
       navigate(button.dataset.searchRoute);
@@ -771,18 +988,25 @@
 
   function renderRoute() {
     const route = routeParts();
-    const [name = "home", id] = route.parts;
+    const [name = "home", id, anchor] = route.parts;
     document.body.dataset.route = name;
-    window.scrollTo({ top: 0, behavior: "instant" });
+    if (!anchor && !/^section-\d+$/.test(name)) window.scrollTo({ top: 0, behavior: "instant" });
     if (name === "home") renderHome();
     else if (name === "learn") renderLearn();
-    else if (name === "chapter") renderChapter(id);
+    else if (name === "chapter") renderChapter(id, anchor);
+    else if (/^section-\d+$/.test(name)) renderChapter(readStore("lastChapter", "ch1"), name);
     else if (name === "practice") renderPractice(id);
     else if (name === "exercises") renderExercises(id);
     else if (name === "glossary") renderGlossary(route.params.get("term") || "");
     else if (name === "notes") renderNotes();
     else if (name === "progress") renderProgress();
     else if (name === "sources") renderSources();
+    else if (name === "tools") renderTools();
+    else if (name === "mindmap") renderMindmap();
+    else if (name === "lab") renderLab(id);
+    else if (name === "flashcards") renderFlashcards();
+    else if (name === "formulae") renderFormulae();
+    else if (name === "exam") renderExam();
     else renderNotFound();
     updateProgressUI();
     document.getElementById("mobile-menu").hidden = true;

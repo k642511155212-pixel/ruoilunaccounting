@@ -1,6 +1,6 @@
 # Ruoilun Accounting Mastery
 
-Website học Financial Accounting theo IFRS bằng tiếng Việt, gồm 15 chương, 802 câu hỏi tương tác, 74 thuật ngữ Việt–Anh và 15 bài tập tự luận có lời giải từng bước.
+An English-taught IFRS Financial Accounting website with 15 open-access chapters, 802 interactive questions, Vietnamese translations for 74 key terms, inline knowledge checks after every lesson section, and 15 fully worked chapter problems.
 
 ## Đưa lên GitHub Pages
 
@@ -15,8 +15,9 @@ Bạn cũng có thể chọn **Deploy from a branch → main / root** vì websit
 
 - `index.html`: khung website và metadata.
 - `styles.css`: toàn bộ design system responsive.
-- `app.js`: router, học theo chương, luyện tập, glossary, bài tự luận, ghi chú và tiến độ.
+- `app.bundle.js`: self-contained course data and application logic. This single root file prevents missing `content/` files on GitHub Pages.
+- `app.js`: editable application source.
 - `content/`: dữ liệu chương, câu hỏi, key terms, lý thuyết sâu và bài tập bổ sung.
 - `assets/`: cinematic landscape hero và SVG favicon.
 
-Tiến độ, ghi chú và sổ lỗi sai được lưu bằng `localStorage` trên trình duyệt của người học.
+Important: upload `index.html`, `styles.css`, `app.bundle.js`, and the `assets` folder. The remaining source folders are included for future editing. Progress, notes, and the mistake notebook are stored in the learner's browser using `localStorage`.

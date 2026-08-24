@@ -1,30 +1,23 @@
 <!doctype html>
-<html lang="vi">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#0a0b11" />
-    <meta name="description" content="Ruoilun Accounting Mastery — học Financial Accounting theo IFRS với lý thuyết sâu, thuật ngữ Việt–Anh chuẩn và bài tập có lời giải." />
+    <meta name="description" content="Ruoilun Accounting Mastery — complete IFRS Financial Accounting lessons in English, with Vietnamese key-term support and fully worked practice." />
     <meta property="og:title" content="Ruoilun Accounting Mastery" />
-    <meta property="og:description" content="Hiểu bản chất. Ghi đúng từng bút toán." />
+    <meta property="og:description" content="Understand the logic. Record every entry correctly." />
     <meta property="og:image" content="assets/hero-landscape.png" />
     <title>Ruoilun Accounting Mastery</title>
     <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
-    <link rel="stylesheet" href="styles.css?v=20260824" />
-    <script>window.AM_VISUALS = new Proxy({}, { get: function(){ return ""; } });</script>
-    <script src="content/data.js"></script>
-    <script src="content/theory-v5.js"></script>
-    <script src="content/mindmap-data.js"></script>
-    <script src="content/generated-questions.js"></script>
-    <script src="content/deep-theory.js"></script>
-    <script src="content/enhancements.js"></script>
-    <script src="app.js?v=20260824" defer></script>
+    <link rel="stylesheet" href="styles.css?v=20260825" />
+    <script src="app.bundle.js?v=20260825b" defer></script>
   </head>
   <body>
-    <a class="skip-link" href="#main">Bỏ qua điều hướng</a>
+    <a class="skip-link" href="#main">Skip to content</a>
 
     <header class="site-header" id="site-header">
-      <a class="brand" href="#home" aria-label="Ruoilun Accounting Mastery — Trang chủ">
+      <a class="brand" href="#home" aria-label="Ruoilun Accounting Mastery — Home">
         <svg class="brand-mark" viewBox="0 0 42 42" role="img" aria-label="Ruoilun monogram">
           <defs>
             <linearGradient id="brand-gradient" x1="0" y1="0" x2="1" y2="1">
@@ -39,57 +32,59 @@
         <span><strong>Ruoilun</strong><small>Accounting Mastery</small></span>
       </a>
 
-      <nav class="desktop-nav" aria-label="Điều hướng chính">
-        <a href="#learn">Lộ trình</a>
-        <a href="#practice">Luyện tập</a>
-        <a href="#exercises">Bài tự luận</a>
+      <nav class="desktop-nav" aria-label="Main navigation">
+        <a href="#learn">All chapters</a>
+        <a href="#practice">Practice</a>
+        <a href="#exercises">Worked problems</a>
         <a href="#glossary">Key terms</a>
-        <a href="#notes">Ghi chú</a>
+        <a href="#notes">Notes</a>
+        <a href="#tools">Study tools</a>
       </nav>
 
       <div class="header-actions">
-        <button class="icon-button search-trigger" type="button" aria-label="Tìm kiếm (Ctrl K)">
+        <button class="icon-button search-trigger" type="button" aria-label="Search (Ctrl K)">
           <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg>
         </button>
-        <button class="progress-chip" type="button" data-route="progress" aria-label="Xem tiến độ học tập">
+        <button class="progress-chip" type="button" data-route="progress" aria-label="View learning progress">
           <span class="progress-ring" aria-hidden="true"><i></i></span>
-          <span><b id="header-progress">0%</b><small>tiến độ</small></span>
+          <span><b id="header-progress">0%</b><small>progress</small></span>
         </button>
-        <button class="menu-button" type="button" aria-expanded="false" aria-controls="mobile-menu" aria-label="Mở menu">
+        <button class="menu-button" type="button" aria-expanded="false" aria-controls="mobile-menu" aria-label="Open menu">
           <span></span><span></span>
         </button>
       </div>
     </header>
 
     <div class="mobile-menu" id="mobile-menu" hidden>
-      <nav aria-label="Điều hướng di động">
-        <a href="#home">Trang chủ</a><a href="#learn">Lộ trình 15 chương</a><a href="#practice">Luyện tập</a>
-        <a href="#exercises">Bài tự luận</a><a href="#glossary">Key terms Việt–Anh</a><a href="#notes">Ghi chú</a>
+      <nav aria-label="Mobile navigation">
+        <a href="#home">Home</a><a href="#learn">All 15 chapters</a><a href="#practice">Practice</a>
+        <a href="#exercises">Worked problems</a><a href="#glossary">English–Vietnamese key terms</a><a href="#notes">Notes</a>
+        <a href="#mindmap">Teacher mind map</a><a href="#lab">Accounting lab</a><a href="#flashcards">Flashcards</a><a href="#formulae">Formula sheet</a><a href="#exam">Exam mode</a>
       </nav>
     </div>
 
     <main id="main" tabindex="-1">
       <div class="loading-screen" aria-live="polite">
         <div class="loading-orbit"></div>
-        <p>Đang mở không gian học tập…</p>
+        <p>Loading the complete course…</p>
       </div>
     </main>
 
     <footer class="site-footer">
       <div><strong>Ruoilun Accounting Mastery</strong><p>Source-grounded IFRS learning, designed for deep understanding.</p></div>
-      <div class="footer-links"><a href="#sources">Nguồn học liệu</a><a href="#glossary">Thuật ngữ</a><a href="#practice">Luyện tập</a></div>
+      <div class="footer-links"><a href="#sources">Sources</a><a href="#glossary">Key terms</a><a href="#practice">Practice</a></div>
     </footer>
 
-    <dialog class="search-dialog" id="search-dialog" aria-label="Tìm kiếm toàn bộ website">
+    <dialog class="search-dialog" id="search-dialog" aria-label="Search the complete website">
       <div class="search-box">
         <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg>
-        <input id="global-search" type="search" autocomplete="off" placeholder="Tìm chương, khái niệm, key term…" />
-        <button class="dialog-close" type="button" aria-label="Đóng tìm kiếm">ESC</button>
+        <input id="global-search" type="search" autocomplete="off" placeholder="Search a chapter, concept, or key term…" />
+        <button class="dialog-close" type="button" aria-label="Close search">ESC</button>
       </div>
       <div id="search-results" class="search-results"></div>
     </dialog>
 
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
-    <noscript>Website cần JavaScript để lưu tiến độ, làm bài và hiển thị lời giải tương tác.</noscript>
+    <noscript>JavaScript is required to load the full course, save progress, and display interactive solutions.</noscript>
   </body>
 </html>
