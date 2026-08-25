@@ -91,6 +91,8 @@ p, li, dd, .option-copy { overflow-wrap: anywhere; }
 
 .brand { display: inline-flex; align-items: center; gap: 12px; width: max-content; min-width: 0; }
 .brand-mark { width: 46px; height: 46px; flex: 0 0 auto; filter: drop-shadow(0 8px 18px rgba(125,142,255,.2)); }
+.brand-character { display: grid; place-items: center; overflow: hidden; border-radius: 15px; background: linear-gradient(145deg, #f7ddc4 0%, #c9bbff 48%, #8293ff 100%); }
+.brand-character img { width: 154%; height: 154%; max-width: none; object-fit: cover; mix-blend-mode: multiply; transform: translateY(1%); }
 .brand span { display: grid; line-height: 1.03; min-width: 0; }
 .brand strong { font-family: var(--font-display); font-size: 22px; font-weight: 600; letter-spacing: -.035em; text-transform: lowercase; }
 .brand small { margin-top: 5px; color: var(--muted); font-size: 10px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; }

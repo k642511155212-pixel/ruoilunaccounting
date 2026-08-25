@@ -1,26 +1,26 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
-  <title id="title">zuòi lùn accounting mark</title>
-  <desc id="desc">A balanced T-account ledger symbol in a soft lavender and peach tile.</desc>
+  <title id="title">zuòi lùn fly mark</title>
+  <desc id="desc">A minimal symmetrical fly symbol in a soft lavender and peach tile.</desc>
   <defs>
     <linearGradient id="tile" x1="7" y1="5" x2="57" y2="60" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#F7DDC4"/>
-      <stop offset="0.48" stop-color="#C9BBFF"/>
-      <stop offset="1" stop-color="#8293FF"/>
+      <stop stop-color="#f7ddc4"/>
+      <stop offset="0.48" stop-color="#c9bbff"/>
+      <stop offset="1" stop-color="#8293ff"/>
     </linearGradient>
     <linearGradient id="glow" x1="15" y1="7" x2="47" y2="54" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#FFFFFF" stop-opacity="0.58"/>
-      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+      <stop stop-color="#fff" stop-opacity="0.58"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
     </linearGradient>
-    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
-      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#090A12" flood-opacity="0.3"/>
-    </filter>
   </defs>
-  <rect x="3" y="3" width="58" height="58" rx="18" fill="url(#tile)" filter="url(#shadow)"/>
+  <rect x="3" y="3" width="58" height="58" rx="18" fill="url(#tile)"/>
   <path d="M10 21C18 9 39 5 53 12C40 13 25 18 15 30C11 27 9 24 10 21Z" fill="url(#glow)"/>
-  <g fill="none" stroke="#11131D" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M17 20.5H47" stroke-width="4.5"/>
-    <path d="M32 21V46" stroke-width="4.5"/>
-    <path d="M18.5 31H25.5M18.5 39H25.5M38.5 31H45.5M38.5 39H45.5" stroke-width="3.5"/>
+  <g stroke="#11131d" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M27.8 28.7C22.5 22 15.6 21.4 14.4 27.3C13.1 33.7 19.3 37.8 27.7 34.2" fill="#fff" fill-opacity="0.2" stroke-width="2.5"/>
+    <path d="M36.2 28.7C41.5 22 48.4 21.4 49.6 27.3C50.9 33.7 44.7 37.8 36.3 34.2" fill="#fff" fill-opacity="0.2" stroke-width="2.5"/>
+    <path d="M29.2 18.2C27.4 15.8 25.6 14.6 23.7 14M34.8 18.2C36.6 15.8 38.4 14.6 40.3 14" fill="none" stroke-width="2.2"/>
+    <circle cx="32" cy="21.5" r="4.2" fill="#11131d" stroke-width="1.5"/>
+    <path d="M32 25.7C27.8 25.7 26.6 29.2 27.2 35.2C27.8 41.4 30.3 46.4 32 48.5C33.7 46.4 36.2 41.4 36.8 35.2C37.4 29.2 36.2 25.7 32 25.7Z" fill="#11131d" stroke-width="1.5"/>
+    <path d="M28 32.7H36M28.3 37.3H35.7" fill="none" stroke="#f7f1e9" stroke-opacity="0.82" stroke-width="1.6"/>
+    <path d="M27.4 34.8L22.8 39M36.6 34.8L41.2 39M28.7 41.6L25.8 45.3M35.3 41.6L38.2 45.3" fill="none" stroke-width="2"/>
   </g>
-  <circle cx="32" cy="20.5" r="3.25" fill="#F9F5EE" stroke="#11131D" stroke-width="2.5"/>
 </svg>
