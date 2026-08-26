@@ -2684,7 +2684,6 @@ window.ACCOUNTING_DATA = {
   ]
 };
 
-
 /* ===== content/theory-v5.js ===== */
 
 (function(){
@@ -4467,7 +4466,6 @@ if(!D.sources.some(x=>x.id==='teachermindmap')) D.sources.unshift({
 const seen=new Set(D.glossary.map(x=>x.term.toLowerCase())); extra.forEach(x=>{if(!seen.has(x.term.toLowerCase())) D.glossary.push(x)});
 })();
 
-
 /* ===== content/mindmap-data.js ===== */
 
 window.ACCOUNTING_MINDMAP = {
@@ -6110,7 +6108,6 @@ window.ACCOUNTING_MINDMAP = {
   }
 };
 
-
 /* ===== content/generated-questions.js ===== */
 
 (function(){
@@ -6503,7 +6500,6 @@ window.ACCOUNTING_MINDMAP = {
   window.ACCOUNTING_GENERATED_QUESTION_COUNT=N.length;
 })();
 
-
 /* ===== content/deep-theory.js ===== */
 
 (function(){
@@ -6674,7 +6670,6 @@ window.ACCOUNTING_MINDMAP = {
     reviewRef:function(ch,section){const i=(ch.sections||[]).indexOf(section);return (reviewRefs[ch.id]&&reviewRefs[ch.id][i])||section.bookRef||ch.source;}
   };
 })();
-
 
 /* ===== content/enhancements.js ===== */
 
@@ -6944,7 +6939,6 @@ window.ACCOUNTING_MINDMAP = {
   window.AM_ENHANCEMENTS = { glossaryVi, mistranslations, exercises };
 })();
 
-
 /* ===== content/english-content.js ===== */
 
 (function () {
@@ -7173,7 +7167,6 @@ window.ACCOUNTING_MINDMAP = {
   ];
 })();
 
-
 /* ===== app.js ===== */
 
 (function () {
@@ -7293,6 +7286,145 @@ window.ACCOUNTING_MINDMAP = {
 
   function notesMap() {
     return readStore("notes", {});
+  }
+
+  function annotationsList() {
+    const value = readStore("annotations", []);
+    return Array.isArray(value) ? value : [];
+  }
+
+  function saveAnnotations(value) {
+    writeStore("annotations", value);
+  }
+
+  function annotationId() {
+    return "an-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 8);
+  }
+
+  function textOffset(root, node, offset) {
+    const range = document.createRange();
+    range.selectNodeContents(root);
+    range.setEnd(node, offset);
+    return range.toString().length;
+  }
+
+  function locateTextPosition(root, target) {
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+    let node;
+    let count = 0;
+    while ((node = walker.nextNode())) {
+      const next = count + node.nodeValue.length;
+      if (target <= next) return { node, offset: Math.max(0, target - count) };
+      count = next;
+    }
+    return null;
+  }
+
+  function renderAnnotationMarks() {
+    document.querySelectorAll("[data-annotatable]").forEach((root) => {
+      const key = root.dataset.annotatable;
+      const records = annotationsList().filter((item) => item.source === key).sort((a, b) => b.start - a.start);
+      records.forEach((item) => {
+        const start = locateTextPosition(root, item.start);
+        const end = locateTextPosition(root, item.end);
+        if (!start || !end || item.end <= item.start) return;
+        try {
+          const range = document.createRange();
+          range.setStart(start.node, start.offset);
+          range.setEnd(end.node, end.offset);
+          if (range.toString() !== item.quote) return;
+          const mark = document.createElement("mark");
+          mark.className = `annotation-mark ${item.type} ${item.color || "lavender"}`;
+          mark.dataset.annotationId = item.id;
+          mark.tabIndex = 0;
+          mark.title = item.body || (item.type === "highlight" ? "Saved highlight" : item.type);
+          range.surroundContents(mark);
+        } catch (_) {}
+      });
+    });
+  }
+
+  function closeAnnotationUI() {
+    document.getElementById("annotation-toolbar")?.remove();
+    document.getElementById("annotation-composer")?.remove();
+  }
+
+  function addAnnotation(type, color, selectionData, body) {
+    const records = annotationsList();
+    const overlaps = records.some((item) => item.source === selectionData.source && item.start < selectionData.end && item.end > selectionData.start);
+    if (overlaps) {
+      toast("This passage already contains an annotation. Select a different sentence.");
+      return;
+    }
+    records.push({
+      id: annotationId(), type, color, body: String(body || "").trim(),
+      chapter: selectionData.chapter, section: selectionData.section,
+      title: selectionData.title, source: selectionData.source,
+      start: selectionData.start, end: selectionData.end, quote: selectionData.quote,
+      created: new Date().toISOString(), updated: new Date().toISOString()
+    });
+    saveAnnotations(records);
+    closeAnnotationUI();
+    window.getSelection()?.removeAllRanges();
+    renderChapter(selectionData.chapter, "section-" + (Number(selectionData.section) + 1));
+    toast(type === "highlight" ? "Highlight saved." : `${type === "note" ? "Note" : "Comment"} attached to the passage.`);
+  }
+
+  function openAnnotationComposer(type, selectionData) {
+    document.getElementById("annotation-toolbar")?.remove();
+    const panel = document.createElement("div");
+    panel.id = "annotation-composer";
+    panel.className = "annotation-composer";
+    panel.innerHTML = `<div class="annotation-panel-head"><div><span class="micro-label">${type === "note" ? "Study note" : "Comment"}</span><strong>${type === "note" ? "Connect this passage to your own understanding" : "Leave a question or observation"}</strong></div><button type="button" data-close-annotation aria-label="Close">×</button></div><blockquote>${esc(selectionData.quote)}</blockquote><textarea maxlength="1200" placeholder="${type === "note" ? "Restate, connect, or add a memory cue…" : "Write your question or observation…"}"></textarea><div class="annotation-panel-actions"><button class="button ghost small" type="button" data-close-annotation>Cancel</button><button class="button primary small" type="button" data-save-annotation>Save ${type}</button></div>`;
+    document.body.appendChild(panel);
+    panel.querySelector("textarea").focus();
+    panel.querySelectorAll("[data-close-annotation]").forEach((button) => button.addEventListener("click", closeAnnotationUI));
+    panel.querySelector("[data-save-annotation]").addEventListener("click", () => {
+      const body = panel.querySelector("textarea").value.trim();
+      if (!body) return toast("Write a short note before saving.");
+      addAnnotation(type, type === "note" ? "peach" : "sage", selectionData, body);
+    });
+  }
+
+  function showSelectionToolbar() {
+    const selection = window.getSelection();
+    if (!selection || selection.isCollapsed || !selection.rangeCount) return;
+    const range = selection.getRangeAt(0);
+    const root = (range.commonAncestorContainer.nodeType === 1 ? range.commonAncestorContainer : range.commonAncestorContainer.parentElement)?.closest?.("[data-annotatable]");
+    const quote = selection.toString().trim();
+    if (!root || quote.length < 2 || quote.length > 700) return;
+    const start = textOffset(root, range.startContainer, range.startOffset);
+    const end = textOffset(root, range.endContainer, range.endOffset);
+    const selectionData = { source: root.dataset.annotatable, chapter: root.dataset.chapter, section: root.dataset.section, title: root.dataset.title, start, end, quote: selection.toString() };
+    document.getElementById("annotation-toolbar")?.remove();
+    const toolbar = document.createElement("div");
+    toolbar.id = "annotation-toolbar";
+    toolbar.className = "annotation-toolbar";
+    toolbar.innerHTML = `<span>Highlight</span><button type="button" class="color-dot lavender" data-highlight="lavender" aria-label="Lavender highlight"></button><button type="button" class="color-dot peach" data-highlight="peach" aria-label="Peach highlight"></button><button type="button" class="color-dot sage" data-highlight="sage" aria-label="Sage highlight"></button><button type="button" class="color-dot rose" data-highlight="rose" aria-label="Rose highlight"></button><i></i><button type="button" data-annotation-type="note">＋ Note</button><button type="button" data-annotation-type="comment">◌ Comment</button><button type="button" data-close-annotation aria-label="Close">×</button>`;
+    document.body.appendChild(toolbar);
+    const box = range.getBoundingClientRect();
+    toolbar.style.left = Math.max(12, Math.min(window.innerWidth - toolbar.offsetWidth - 12, box.left + box.width / 2 - toolbar.offsetWidth / 2)) + "px";
+    toolbar.style.top = Math.max(12, box.top + window.scrollY - toolbar.offsetHeight - 12) + "px";
+    toolbar.querySelectorAll("[data-highlight]").forEach((button) => button.addEventListener("click", () => addAnnotation("highlight", button.dataset.highlight, selectionData, "")));
+    toolbar.querySelectorAll("[data-annotation-type]").forEach((button) => button.addEventListener("click", () => openAnnotationComposer(button.dataset.annotationType, selectionData)));
+    toolbar.querySelector("[data-close-annotation]").addEventListener("click", closeAnnotationUI);
+  }
+
+  function bindAnnotationEvents() {
+    main.querySelectorAll("[data-annotatable]").forEach((node) => node.addEventListener("mouseup", () => window.setTimeout(showSelectionToolbar, 0)));
+    main.querySelectorAll(".annotation-mark").forEach((mark) => {
+      const open = () => {
+        const item = annotationsList().find((record) => record.id === mark.dataset.annotationId);
+        if (!item) return;
+        const action = window.confirm(`${item.type === "highlight" ? "Highlight" : item.type === "note" ? "Note" : "Comment"}${item.body ? "\n\n" + item.body : ""}\n\nRemove this annotation?`);
+        if (!action) return;
+        saveAnnotations(annotationsList().filter((record) => record.id !== item.id));
+        renderChapter(item.chapter, "section-" + (Number(item.section) + 1));
+        toast("Annotation removed.");
+      };
+      mark.addEventListener("click", open);
+      mark.addEventListener("keydown", (event) => { if (event.key === "Enter") open(); });
+    });
   }
 
   function wrongIds() {
@@ -7560,7 +7692,7 @@ window.ACCOUNTING_MINDMAP = {
           <details class="point-card" ${pIndex === 0 ? "open" : ""}>
             <summary><b>${pIndex + 1}</b><span class="point-title">${esc(pointTitle(point))}</span><span class="point-toggle" aria-hidden="true"></span></summary>
             <div class="point-explanation ${termSupport ? "" : "single"}">
-              <div class="explain-pane"><span>Full explanation · English</span>${esc(deep)}</div>
+              <div class="explain-pane"><span>Full explanation · English</span><p class="annotation-copy" data-annotatable="${esc(chapter.id + ":" + sIndex + ":point:" + pIndex)}" data-chapter="${esc(chapter.id)}" data-section="${sIndex}" data-title="${esc(section.title)}">${esc(deep)}</p></div>
               ${termSupport}
             </div>
           </details>`;
@@ -7576,19 +7708,20 @@ window.ACCOUNTING_MINDMAP = {
         <section class="lesson-section" id="section-${sIndex + 1}">
           <span class="lesson-index">Lesson ${String(sIndex + 1).padStart(2, "0")}</span>
           <h2>${esc(section.title)}</h2>
-          <p class="lesson-lead">${esc(section.lead)}</p>
+          <p class="lesson-lead" data-annotatable="${esc(chapter.id + ":" + sIndex + ":lead")}" data-chapter="${esc(chapter.id)}" data-section="${sIndex}" data-title="${esc(section.title)}">${esc(section.lead)}</p>
+          <div class="annotation-guide"><span>✦</span><p><strong>Read actively.</strong> Select any sentence to highlight it, attach a study note, or leave a comment.</p></div>
           <div class="point-stack">${points}</div>
           <div class="lesson-two-col">
             <div class="worked-example">
               <span class="micro-label">Worked example · step by step</span>
               <h3>From facts to a defensible answer</h3>
-              <p>${esc(section.example)}</p>
-              <div class="solution-steps">${steps.map((step) => `<div class="solution-step">${esc(step)}</div>`).join("")}</div>
+              <p data-annotatable="${esc(chapter.id + ":" + sIndex + ":example")}" data-chapter="${esc(chapter.id)}" data-section="${sIndex}" data-title="${esc(section.title)}">${esc(section.example)}</p>
+              <div class="solution-steps">${steps.map((step, stepIndex) => `<div class="solution-step" data-annotatable="${esc(chapter.id + ":" + sIndex + ":step:" + stepIndex)}" data-chapter="${esc(chapter.id)}" data-section="${sIndex}" data-title="${esc(section.title)}">${esc(step)}</div>`).join("")}</div>
             </div>
             <div class="exam-trap">
               <span class="micro-label">Exam trap</span>
               <h3>Pause before choosing an answer</h3>
-              <p>${esc(section.trap)}</p>
+              <p data-annotatable="${esc(chapter.id + ":" + sIndex + ":trap")}" data-chapter="${esc(chapter.id)}" data-section="${sIndex}" data-title="${esc(section.title)}">${esc(section.trap)}</p>
             </div>
           </div>
           ${inlineQuizHtml(quickQuestion, chapter, sIndex)}
@@ -7627,7 +7760,9 @@ window.ACCOUNTING_MINDMAP = {
         </div>
       </div></div>`;
 
+    renderAnnotationMarks();
     bindChapterEvents(chapter, anchor);
+    bindAnnotationEvents();
   }
 
   function bindChapterEvents(chapter, anchor) {
@@ -7954,6 +8089,15 @@ window.ACCOUNTING_MINDMAP = {
 
   function renderNotes() {
     const entries = Object.entries(notesMap());
+    const annotations = annotationsList().slice().sort((a, b) => new Date(b.updated) - new Date(a.updated));
+    const highlightCards = annotations.filter((item) => item.type === "highlight").map((item) => {
+      const chapter = getChapter(item.chapter);
+      return `<article class="note-card annotation-note-card"><div class="note-card-top"><div><span class="annotation-kind ${esc(item.color || "lavender")}">Highlight</span><h3>${esc(item.title)}</h3><small>Ch ${esc(chapter?.number || "")} · ${esc(new Date(item.updated).toLocaleDateString("en-GB"))}</small></div></div><blockquote>${esc(item.quote)}</blockquote><div class="note-card-actions"><button type="button" data-open-annotation="${esc(item.id)}">Open passage</button><button type="button" data-delete-annotation="${esc(item.id)}">Delete</button></div></article>`;
+    }).join("");
+    const attachedCards = annotations.filter((item) => item.type !== "highlight").map((item) => {
+      const chapter = getChapter(item.chapter);
+      return `<article class="note-card annotation-note-card"><div class="note-card-top"><div><span class="annotation-kind ${esc(item.type)}">${item.type === "note" ? "Study note" : "Comment"}</span><h3>${esc(item.title)}</h3><small>Ch ${esc(chapter?.number || "")} · ${esc(new Date(item.updated).toLocaleDateString("en-GB"))}</small></div></div><blockquote>${esc(item.quote)}</blockquote><p>${esc(item.body)}</p><div class="note-card-actions"><button type="button" data-open-annotation="${esc(item.id)}">Open passage</button><button type="button" data-delete-annotation="${esc(item.id)}">Delete</button></div></article>`;
+    }).join("");
     const noteCards = entries.map(([key, note]) => {
       const chapter = getChapter(note.chapter);
       return `
@@ -7968,7 +8112,10 @@ window.ACCOUNTING_MINDMAP = {
       <article class="note-card"><div class="note-card-top"><div><h3>${esc(q.topic)}</h3><small>${esc(q.id)} · Ch ${esc(getChapter(q.chapter)?.number || "")}</small></div></div><p>${esc(q.question)}</p><div class="note-card-actions"><button type="button" data-review-question="${esc(q.id)}">Attempt again</button></div></article>`).join("");
     main.innerHTML = `
       <div class="page-shell"><div class="content-width">
-        ${routeHead("Personal notebook", "Lesson notes and a mistake notebook.", "All data is stored locally in your browser. Notes stay attached to the relevant lesson, while incorrect answers from both inline checks and Practice are collected for deliberate review.")}
+        ${routeHead("Personal notebook", "Highlights, notes, comments, and mistakes—together.", "Select text inside any lesson to highlight it or attach a note or comment. Everything is stored locally in this browser and stays linked to its original passage.")}
+        <div class="annotation-stats"><div><b>${annotations.filter((item) => item.type === "highlight").length}</b><span>Highlights</span></div><div><b>${annotations.filter((item) => item.type === "note").length}</b><span>Attached notes</span></div><div><b>${annotations.filter((item) => item.type === "comment").length}</b><span>Comments</span></div><div><b>${entries.length}</b><span>Lesson notes</span></div></div>
+        <section class="section-block"><div class="section-heading"><div><span class="eyebrow">Selected passages</span><h2>Highlights</h2></div></div><div class="notes-grid">${highlightCards || `<div class="empty-state"><strong>No highlights yet.</strong><span>Select a sentence in any lesson and choose a highlight colour.</span></div>`}</div></section>
+        <section class="section-block"><div class="section-heading"><div><span class="eyebrow">In-context thinking</span><h2>Notes & comments</h2></div></div><div class="notes-grid">${attachedCards || `<div class="empty-state"><strong>No attached notes or comments yet.</strong><span>Select a passage, then choose Note or Comment.</span></div>`}</div></section>
         <section class="section-block"><div class="section-heading"><div><span class="eyebrow">My notes</span><h2>Lesson notes</h2></div></div><div class="notes-grid">${noteCards || `<div class="empty-state"><strong>No notes yet.</strong><span>Open any chapter and select “Add lesson note”.</span></div>`}</div></section>
         <section class="section-block"><div class="section-heading"><div><span class="eyebrow">Mistake notebook</span><h2>Questions to attempt again</h2></div></div><div class="notes-grid">${wrongCards || `<div class="empty-state"><strong>Your mistake notebook is empty.</strong><span>Answer a knowledge check or Practice question to build a review queue.</span></div>`}</div></section>
       </div></div>`;
@@ -7981,6 +8128,15 @@ window.ACCOUNTING_MINDMAP = {
       const notes = notesMap();
       delete notes[button.dataset.deleteNote];
       writeStore("notes", notes);
+      renderNotes();
+    }));
+    document.querySelectorAll("[data-open-annotation]").forEach((button) => button.addEventListener("click", () => {
+      const item = annotationsList().find((record) => record.id === button.dataset.openAnnotation);
+      if (item) navigate("chapter/" + item.chapter + "/section-" + (Number(item.section) + 1));
+    }));
+    document.querySelectorAll("[data-delete-annotation]").forEach((button) => button.addEventListener("click", () => {
+      if (!window.confirm("Delete this annotation?")) return;
+      saveAnnotations(annotationsList().filter((item) => item.id !== button.dataset.deleteAnnotation));
       renderNotes();
     }));
     document.querySelectorAll("[data-review-question]").forEach((button) => button.addEventListener("click", () => {

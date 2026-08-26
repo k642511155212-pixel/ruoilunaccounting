@@ -686,8 +686,117 @@ p, li, dd, .option-copy { overflow-wrap: anywhere; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
+/* Passage annotations: highlight, note, and comment */
+[data-annotatable] {
+  cursor: text;
+  -webkit-user-select: text;
+  user-select: text;
+}
 
-</style>
+.annotation-copy { margin: .5rem 0 0; }
+
+.annotation-guide {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  margin: 1rem 0 1.25rem;
+  padding: .8rem 1rem;
+  color: var(--muted, #aaa9b5);
+  background: rgba(190, 174, 255, .055);
+  border: 1px solid rgba(190, 174, 255, .15);
+  border-radius: 14px;
+  font-size: .84rem;
+  line-height: 1.5;
+}
+.annotation-guide span { color: #cbbaff; }
+.annotation-guide p { margin: 0; }
+.annotation-guide strong { color: var(--text, #f5f3f7); }
+
+.annotation-mark {
+  color: inherit;
+  padding: .06em .12em;
+  margin: 0 -.02em;
+  border-radius: .22em;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  cursor: pointer;
+  border-bottom: 1px solid transparent;
+}
+.annotation-mark.lavender { background: rgba(181, 155, 255, .34); }
+.annotation-mark.peach { background: rgba(255, 190, 145, .34); }
+.annotation-mark.sage { background: rgba(139, 218, 182, .30); }
+.annotation-mark.rose { background: rgba(255, 145, 174, .30); }
+.annotation-mark.note { border-bottom-color: #ffc28f; }
+.annotation-mark.comment { border-bottom: 2px dotted #8bdab6; }
+.annotation-mark:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+
+.annotation-toolbar {
+  position: absolute;
+  z-index: 10020;
+  display: flex;
+  align-items: center;
+  gap: .42rem;
+  width: max-content;
+  max-width: calc(100vw - 24px);
+  padding: .55rem .65rem;
+  color: #f8f6fb;
+  background: rgba(13, 13, 22, .96);
+  border: 1px solid rgba(255, 255, 255, .14);
+  border-radius: 14px;
+  box-shadow: 0 18px 60px rgba(0, 0, 0, .45);
+  backdrop-filter: blur(18px);
+  font: 600 .78rem/1 system-ui, sans-serif;
+}
+.annotation-toolbar > span { padding: 0 .2rem; color: #aaa8b4; }
+.annotation-toolbar > i { width: 1px; height: 22px; background: rgba(255,255,255,.14); }
+.annotation-toolbar button { border: 0; color: inherit; background: transparent; padding: .46rem .55rem; border-radius: 9px; font: inherit; cursor: pointer; white-space: nowrap; }
+.annotation-toolbar button:hover { background: rgba(255,255,255,.09); }
+.annotation-toolbar .color-dot { width: 22px; height: 22px; padding: 0; border: 2px solid rgba(255,255,255,.22); border-radius: 50%; }
+.annotation-toolbar .lavender { background: #b59bff; }
+.annotation-toolbar .peach { background: #ffbe91; }
+.annotation-toolbar .sage { background: #8bdab6; }
+.annotation-toolbar .rose { background: #ff91ae; }
+
+.annotation-composer {
+  position: fixed;
+  z-index: 10030;
+  top: 50%;
+  left: 50%;
+  width: min(540px, calc(100vw - 28px));
+  padding: 1.2rem;
+  transform: translate(-50%, -50%);
+  color: #f7f5fa;
+  background: rgba(16, 16, 27, .98);
+  border: 1px solid rgba(205, 188, 255, .22);
+  border-radius: 22px;
+  box-shadow: 0 30px 100px rgba(0,0,0,.62);
+}
+.annotation-panel-head { display: flex; justify-content: space-between; gap: 1rem; }
+.annotation-panel-head strong { display: block; margin-top: .28rem; font: 600 1.05rem/1.35 system-ui, sans-serif; }
+.annotation-panel-head > button { width: 34px; height: 34px; border: 0; border-radius: 50%; color: #fff; background: rgba(255,255,255,.08); font-size: 1.3rem; cursor: pointer; }
+.annotation-composer blockquote, .annotation-note-card blockquote { margin: 1rem 0; padding: .75rem 1rem; color: #d9d5e0; background: rgba(255,255,255,.045); border-left: 3px solid #b59bff; border-radius: 0 10px 10px 0; font-style: italic; line-height: 1.55; }
+.annotation-composer textarea { width: 100%; min-height: 130px; resize: vertical; box-sizing: border-box; padding: .9rem 1rem; color: #fff; background: rgba(255,255,255,.055); border: 1px solid rgba(255,255,255,.14); border-radius: 13px; font: 400 .95rem/1.55 system-ui, sans-serif; }
+.annotation-composer textarea:focus { outline: 2px solid rgba(181,155,255,.65); border-color: transparent; }
+.annotation-panel-actions { display: flex; justify-content: flex-end; gap: .65rem; margin-top: .9rem; }
+
+.annotation-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: .8rem; margin: 0 0 2.4rem; }
+.annotation-stats > div { padding: 1.1rem; background: rgba(255,255,255,.035); border: 1px solid rgba(255,255,255,.1); border-radius: 16px; }
+.annotation-stats b { display: block; color: #f7f4fa; font: 500 1.8rem/1.1 Georgia, serif; }
+.annotation-stats span { display: block; margin-top: .35rem; color: #aaa8b4; font-size: .78rem; }
+.annotation-kind { display: inline-block; margin-bottom: .55rem; padding: .28rem .55rem; border-radius: 999px; color: #17131c; background: #b59bff; font: 700 .66rem/1 system-ui, sans-serif; letter-spacing: .06em; text-transform: uppercase; }
+.annotation-kind.peach, .annotation-kind.note { background: #ffbe91; }
+.annotation-kind.sage, .annotation-kind.comment { background: #8bdab6; }
+.annotation-kind.rose { background: #ff91ae; }
+
+@media (max-width: 700px) {
+  .annotation-toolbar { position: fixed; left: 10px !important; right: 10px; bottom: 12px; top: auto !important; width: auto; overflow-x: auto; justify-content: flex-start; border-radius: 16px; }
+  .annotation-toolbar > span { display: none; }
+  .annotation-composer { top: auto; bottom: 0; left: 0; width: 100%; max-height: 86vh; overflow-y: auto; box-sizing: border-box; transform: none; border-radius: 24px 24px 0 0; }
+  .annotation-stats { grid-template-columns: repeat(2, 1fr); }
+  .annotation-guide { align-items: flex-start; }
+}
+
+    </style>
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
@@ -3439,7 +3548,6 @@ window.ACCOUNTING_DATA = {
   ]
 };
 
-
 /* ===== content/theory-v5.js ===== */
 
 (function(){
@@ -5222,7 +5330,6 @@ if(!D.sources.some(x=>x.id==='teachermindmap')) D.sources.unshift({
 const seen=new Set(D.glossary.map(x=>x.term.toLowerCase())); extra.forEach(x=>{if(!seen.has(x.term.toLowerCase())) D.glossary.push(x)});
 })();
 
-
 /* ===== content/mindmap-data.js ===== */
 
 window.ACCOUNTING_MINDMAP = {
@@ -6865,7 +6972,6 @@ window.ACCOUNTING_MINDMAP = {
   }
 };
 
-
 /* ===== content/generated-questions.js ===== */
 
 (function(){
@@ -7258,7 +7364,6 @@ window.ACCOUNTING_MINDMAP = {
   window.ACCOUNTING_GENERATED_QUESTION_COUNT=N.length;
 })();
 
-
 /* ===== content/deep-theory.js ===== */
 
 (function(){
@@ -7429,7 +7534,6 @@ window.ACCOUNTING_MINDMAP = {
     reviewRef:function(ch,section){const i=(ch.sections||[]).indexOf(section);return (reviewRefs[ch.id]&&reviewRefs[ch.id][i])||section.bookRef||ch.source;}
   };
 })();
-
 
 /* ===== content/enhancements.js ===== */
 
@@ -7699,7 +7803,6 @@ window.ACCOUNTING_MINDMAP = {
   window.AM_ENHANCEMENTS = { glossaryVi, mistranslations, exercises };
 })();
 
-
 /* ===== content/english-content.js ===== */
 
 (function () {
@@ -7928,7 +8031,6 @@ window.ACCOUNTING_MINDMAP = {
   ];
 })();
 
-
 /* ===== app.js ===== */
 
 (function () {
@@ -8048,6 +8150,145 @@ window.ACCOUNTING_MINDMAP = {
 
   function notesMap() {
     return readStore("notes", {});
+  }
+
+  function annotationsList() {
+    const value = readStore("annotations", []);
+    return Array.isArray(value) ? value : [];
+  }
+
+  function saveAnnotations(value) {
+    writeStore("annotations", value);
+  }
+
+  function annotationId() {
+    return "an-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 8);
+  }
+
+  function textOffset(root, node, offset) {
+    const range = document.createRange();
+    range.selectNodeContents(root);
+    range.setEnd(node, offset);
+    return range.toString().length;
+  }
+
+  function locateTextPosition(root, target) {
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+    let node;
+    let count = 0;
+    while ((node = walker.nextNode())) {
+      const next = count + node.nodeValue.length;
+      if (target <= next) return { node, offset: Math.max(0, target - count) };
+      count = next;
+    }
+    return null;
+  }
+
+  function renderAnnotationMarks() {
+    document.querySelectorAll("[data-annotatable]").forEach((root) => {
+      const key = root.dataset.annotatable;
+      const records = annotationsList().filter((item) => item.source === key).sort((a, b) => b.start - a.start);
+      records.forEach((item) => {
+        const start = locateTextPosition(root, item.start);
+        const end = locateTextPosition(root, item.end);
+        if (!start || !end || item.end <= item.start) return;
+        try {
+          const range = document.createRange();
+          range.setStart(start.node, start.offset);
+          range.setEnd(end.node, end.offset);
+          if (range.toString() !== item.quote) return;
+          const mark = document.createElement("mark");
+          mark.className = `annotation-mark ${item.type} ${item.color || "lavender"}`;
+          mark.dataset.annotationId = item.id;
+          mark.tabIndex = 0;
+          mark.title = item.body || (item.type === "highlight" ? "Saved highlight" : item.type);
+          range.surroundContents(mark);
+        } catch (_) {}
+      });
+    });
+  }
+
+  function closeAnnotationUI() {
+    document.getElementById("annotation-toolbar")?.remove();
+    document.getElementById("annotation-composer")?.remove();
+  }
+
+  function addAnnotation(type, color, selectionData, body) {
+    const records = annotationsList();
+    const overlaps = records.some((item) => item.source === selectionData.source && item.start < selectionData.end && item.end > selectionData.start);
+    if (overlaps) {
+      toast("This passage already contains an annotation. Select a different sentence.");
+      return;
+    }
+    records.push({
+      id: annotationId(), type, color, body: String(body || "").trim(),
+      chapter: selectionData.chapter, section: selectionData.section,
+      title: selectionData.title, source: selectionData.source,
+      start: selectionData.start, end: selectionData.end, quote: selectionData.quote,
+      created: new Date().toISOString(), updated: new Date().toISOString()
+    });
+    saveAnnotations(records);
+    closeAnnotationUI();
+    window.getSelection()?.removeAllRanges();
+    renderChapter(selectionData.chapter, "section-" + (Number(selectionData.section) + 1));
+    toast(type === "highlight" ? "Highlight saved." : `${type === "note" ? "Note" : "Comment"} attached to the passage.`);
+  }
+
+  function openAnnotationComposer(type, selectionData) {
+    document.getElementById("annotation-toolbar")?.remove();
+    const panel = document.createElement("div");
+    panel.id = "annotation-composer";
+    panel.className = "annotation-composer";
+    panel.innerHTML = `<div class="annotation-panel-head"><div><span class="micro-label">${type === "note" ? "Study note" : "Comment"}</span><strong>${type === "note" ? "Connect this passage to your own understanding" : "Leave a question or observation"}</strong></div><button type="button" data-close-annotation aria-label="Close">×</button></div><blockquote>${esc(selectionData.quote)}</blockquote><textarea maxlength="1200" placeholder="${type === "note" ? "Restate, connect, or add a memory cue…" : "Write your question or observation…"}"></textarea><div class="annotation-panel-actions"><button class="button ghost small" type="button" data-close-annotation>Cancel</button><button class="button primary small" type="button" data-save-annotation>Save ${type}</button></div>`;
+    document.body.appendChild(panel);
+    panel.querySelector("textarea").focus();
+    panel.querySelectorAll("[data-close-annotation]").forEach((button) => button.addEventListener("click", closeAnnotationUI));
+    panel.querySelector("[data-save-annotation]").addEventListener("click", () => {
+      const body = panel.querySelector("textarea").value.trim();
+      if (!body) return toast("Write a short note before saving.");
+      addAnnotation(type, type === "note" ? "peach" : "sage", selectionData, body);
+    });
+  }
+
+  function showSelectionToolbar() {
+    const selection = window.getSelection();
+    if (!selection || selection.isCollapsed || !selection.rangeCount) return;
+    const range = selection.getRangeAt(0);
+    const root = (range.commonAncestorContainer.nodeType === 1 ? range.commonAncestorContainer : range.commonAncestorContainer.parentElement)?.closest?.("[data-annotatable]");
+    const quote = selection.toString().trim();
+    if (!root || quote.length < 2 || quote.length > 700) return;
+    const start = textOffset(root, range.startContainer, range.startOffset);
+    const end = textOffset(root, range.endContainer, range.endOffset);
+    const selectionData = { source: root.dataset.annotatable, chapter: root.dataset.chapter, section: root.dataset.section, title: root.dataset.title, start, end, quote: selection.toString() };
+    document.getElementById("annotation-toolbar")?.remove();
+    const toolbar = document.createElement("div");
+    toolbar.id = "annotation-toolbar";
+    toolbar.className = "annotation-toolbar";
+    toolbar.innerHTML = `<span>Highlight</span><button type="button" class="color-dot lavender" data-highlight="lavender" aria-label="Lavender highlight"></button><button type="button" class="color-dot peach" data-highlight="peach" aria-label="Peach highlight"></button><button type="button" class="color-dot sage" data-highlight="sage" aria-label="Sage highlight"></button><button type="button" class="color-dot rose" data-highlight="rose" aria-label="Rose highlight"></button><i></i><button type="button" data-annotation-type="note">＋ Note</button><button type="button" data-annotation-type="comment">◌ Comment</button><button type="button" data-close-annotation aria-label="Close">×</button>`;
+    document.body.appendChild(toolbar);
+    const box = range.getBoundingClientRect();
+    toolbar.style.left = Math.max(12, Math.min(window.innerWidth - toolbar.offsetWidth - 12, box.left + box.width / 2 - toolbar.offsetWidth / 2)) + "px";
+    toolbar.style.top = Math.max(12, box.top + window.scrollY - toolbar.offsetHeight - 12) + "px";
+    toolbar.querySelectorAll("[data-highlight]").forEach((button) => button.addEventListener("click", () => addAnnotation("highlight", button.dataset.highlight, selectionData, "")));
+    toolbar.querySelectorAll("[data-annotation-type]").forEach((button) => button.addEventListener("click", () => openAnnotationComposer(button.dataset.annotationType, selectionData)));
+    toolbar.querySelector("[data-close-annotation]").addEventListener("click", closeAnnotationUI);
+  }
+
+  function bindAnnotationEvents() {
+    main.querySelectorAll("[data-annotatable]").forEach((node) => node.addEventListener("mouseup", () => window.setTimeout(showSelectionToolbar, 0)));
+    main.querySelectorAll(".annotation-mark").forEach((mark) => {
+      const open = () => {
+        const item = annotationsList().find((record) => record.id === mark.dataset.annotationId);
+        if (!item) return;
+        const action = window.confirm(`${item.type === "highlight" ? "Highlight" : item.type === "note" ? "Note" : "Comment"}${item.body ? "\n\n" + item.body : ""}\n\nRemove this annotation?`);
+        if (!action) return;
+        saveAnnotations(annotationsList().filter((record) => record.id !== item.id));
+        renderChapter(item.chapter, "section-" + (Number(item.section) + 1));
+        toast("Annotation removed.");
+      };
+      mark.addEventListener("click", open);
+      mark.addEventListener("keydown", (event) => { if (event.key === "Enter") open(); });
+    });
   }
 
   function wrongIds() {
@@ -8315,7 +8556,7 @@ window.ACCOUNTING_MINDMAP = {
           <details class="point-card" ${pIndex === 0 ? "open" : ""}>
             <summary><b>${pIndex + 1}</b><span class="point-title">${esc(pointTitle(point))}</span><span class="point-toggle" aria-hidden="true"></span></summary>
             <div class="point-explanation ${termSupport ? "" : "single"}">
-              <div class="explain-pane"><span>Full explanation · English</span>${esc(deep)}</div>
+              <div class="explain-pane"><span>Full explanation · English</span><p class="annotation-copy" data-annotatable="${esc(chapter.id + ":" + sIndex + ":point:" + pIndex)}" data-chapter="${esc(chapter.id)}" data-section="${sIndex}" data-title="${esc(section.title)}">${esc(deep)}</p></div>
               ${termSupport}
             </div>
           </details>`;
@@ -8331,19 +8572,20 @@ window.ACCOUNTING_MINDMAP = {
         <section class="lesson-section" id="section-${sIndex + 1}">
           <span class="lesson-index">Lesson ${String(sIndex + 1).padStart(2, "0")}</span>
           <h2>${esc(section.title)}</h2>
-          <p class="lesson-lead">${esc(section.lead)}</p>
+          <p class="lesson-lead" data-annotatable="${esc(chapter.id + ":" + sIndex + ":lead")}" data-chapter="${esc(chapter.id)}" data-section="${sIndex}" data-title="${esc(section.title)}">${esc(section.lead)}</p>
+          <div class="annotation-guide"><span>✦</span><p><strong>Read actively.</strong> Select any sentence to highlight it, attach a study note, or leave a comment.</p></div>
           <div class="point-stack">${points}</div>
           <div class="lesson-two-col">
             <div class="worked-example">
               <span class="micro-label">Worked example · step by step</span>
               <h3>From facts to a defensible answer</h3>
-              <p>${esc(section.example)}</p>
-              <div class="solution-steps">${steps.map((step) => `<div class="solution-step">${esc(step)}</div>`).join("")}</div>
+              <p data-annotatable="${esc(chapter.id + ":" + sIndex + ":example")}" data-chapter="${esc(chapter.id)}" data-section="${sIndex}" data-title="${esc(section.title)}">${esc(section.example)}</p>
+              <div class="solution-steps">${steps.map((step, stepIndex) => `<div class="solution-step" data-annotatable="${esc(chapter.id + ":" + sIndex + ":step:" + stepIndex)}" data-chapter="${esc(chapter.id)}" data-section="${sIndex}" data-title="${esc(section.title)}">${esc(step)}</div>`).join("")}</div>
             </div>
             <div class="exam-trap">
               <span class="micro-label">Exam trap</span>
               <h3>Pause before choosing an answer</h3>
-              <p>${esc(section.trap)}</p>
+              <p data-annotatable="${esc(chapter.id + ":" + sIndex + ":trap")}" data-chapter="${esc(chapter.id)}" data-section="${sIndex}" data-title="${esc(section.title)}">${esc(section.trap)}</p>
             </div>
           </div>
           ${inlineQuizHtml(quickQuestion, chapter, sIndex)}
@@ -8382,7 +8624,9 @@ window.ACCOUNTING_MINDMAP = {
         </div>
       </div></div>`;
 
+    renderAnnotationMarks();
     bindChapterEvents(chapter, anchor);
+    bindAnnotationEvents();
   }
 
   function bindChapterEvents(chapter, anchor) {
@@ -8709,6 +8953,15 @@ window.ACCOUNTING_MINDMAP = {
 
   function renderNotes() {
     const entries = Object.entries(notesMap());
+    const annotations = annotationsList().slice().sort((a, b) => new Date(b.updated) - new Date(a.updated));
+    const highlightCards = annotations.filter((item) => item.type === "highlight").map((item) => {
+      const chapter = getChapter(item.chapter);
+      return `<article class="note-card annotation-note-card"><div class="note-card-top"><div><span class="annotation-kind ${esc(item.color || "lavender")}">Highlight</span><h3>${esc(item.title)}</h3><small>Ch ${esc(chapter?.number || "")} · ${esc(new Date(item.updated).toLocaleDateString("en-GB"))}</small></div></div><blockquote>${esc(item.quote)}</blockquote><div class="note-card-actions"><button type="button" data-open-annotation="${esc(item.id)}">Open passage</button><button type="button" data-delete-annotation="${esc(item.id)}">Delete</button></div></article>`;
+    }).join("");
+    const attachedCards = annotations.filter((item) => item.type !== "highlight").map((item) => {
+      const chapter = getChapter(item.chapter);
+      return `<article class="note-card annotation-note-card"><div class="note-card-top"><div><span class="annotation-kind ${esc(item.type)}">${item.type === "note" ? "Study note" : "Comment"}</span><h3>${esc(item.title)}</h3><small>Ch ${esc(chapter?.number || "")} · ${esc(new Date(item.updated).toLocaleDateString("en-GB"))}</small></div></div><blockquote>${esc(item.quote)}</blockquote><p>${esc(item.body)}</p><div class="note-card-actions"><button type="button" data-open-annotation="${esc(item.id)}">Open passage</button><button type="button" data-delete-annotation="${esc(item.id)}">Delete</button></div></article>`;
+    }).join("");
     const noteCards = entries.map(([key, note]) => {
       const chapter = getChapter(note.chapter);
       return `
@@ -8723,7 +8976,10 @@ window.ACCOUNTING_MINDMAP = {
       <article class="note-card"><div class="note-card-top"><div><h3>${esc(q.topic)}</h3><small>${esc(q.id)} · Ch ${esc(getChapter(q.chapter)?.number || "")}</small></div></div><p>${esc(q.question)}</p><div class="note-card-actions"><button type="button" data-review-question="${esc(q.id)}">Attempt again</button></div></article>`).join("");
     main.innerHTML = `
       <div class="page-shell"><div class="content-width">
-        ${routeHead("Personal notebook", "Lesson notes and a mistake notebook.", "All data is stored locally in your browser. Notes stay attached to the relevant lesson, while incorrect answers from both inline checks and Practice are collected for deliberate review.")}
+        ${routeHead("Personal notebook", "Highlights, notes, comments, and mistakes—together.", "Select text inside any lesson to highlight it or attach a note or comment. Everything is stored locally in this browser and stays linked to its original passage.")}
+        <div class="annotation-stats"><div><b>${annotations.filter((item) => item.type === "highlight").length}</b><span>Highlights</span></div><div><b>${annotations.filter((item) => item.type === "note").length}</b><span>Attached notes</span></div><div><b>${annotations.filter((item) => item.type === "comment").length}</b><span>Comments</span></div><div><b>${entries.length}</b><span>Lesson notes</span></div></div>
+        <section class="section-block"><div class="section-heading"><div><span class="eyebrow">Selected passages</span><h2>Highlights</h2></div></div><div class="notes-grid">${highlightCards || `<div class="empty-state"><strong>No highlights yet.</strong><span>Select a sentence in any lesson and choose a highlight colour.</span></div>`}</div></section>
+        <section class="section-block"><div class="section-heading"><div><span class="eyebrow">In-context thinking</span><h2>Notes & comments</h2></div></div><div class="notes-grid">${attachedCards || `<div class="empty-state"><strong>No attached notes or comments yet.</strong><span>Select a passage, then choose Note or Comment.</span></div>`}</div></section>
         <section class="section-block"><div class="section-heading"><div><span class="eyebrow">My notes</span><h2>Lesson notes</h2></div></div><div class="notes-grid">${noteCards || `<div class="empty-state"><strong>No notes yet.</strong><span>Open any chapter and select “Add lesson note”.</span></div>`}</div></section>
         <section class="section-block"><div class="section-heading"><div><span class="eyebrow">Mistake notebook</span><h2>Questions to attempt again</h2></div></div><div class="notes-grid">${wrongCards || `<div class="empty-state"><strong>Your mistake notebook is empty.</strong><span>Answer a knowledge check or Practice question to build a review queue.</span></div>`}</div></section>
       </div></div>`;
@@ -8736,6 +8992,15 @@ window.ACCOUNTING_MINDMAP = {
       const notes = notesMap();
       delete notes[button.dataset.deleteNote];
       writeStore("notes", notes);
+      renderNotes();
+    }));
+    document.querySelectorAll("[data-open-annotation]").forEach((button) => button.addEventListener("click", () => {
+      const item = annotationsList().find((record) => record.id === button.dataset.openAnnotation);
+      if (item) navigate("chapter/" + item.chapter + "/section-" + (Number(item.section) + 1));
+    }));
+    document.querySelectorAll("[data-delete-annotation]").forEach((button) => button.addEventListener("click", () => {
+      if (!window.confirm("Delete this annotation?")) return;
+      saveAnnotations(annotationsList().filter((item) => item.id !== button.dataset.deleteAnnotation));
       renderNotes();
     }));
     document.querySelectorAll("[data-review-question]").forEach((button) => button.addEventListener("click", () => {
@@ -8977,6 +9242,6 @@ window.ACCOUNTING_MINDMAP = {
   renderRoute();
 })();
 
-</script>
+    </script>
   </body>
 </html>
